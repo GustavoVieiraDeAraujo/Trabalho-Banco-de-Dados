@@ -239,7 +239,15 @@ def translate_foot(foot):
   return translation.get(foot, foot)
 
 def translate_market_value(marketValue):
-  if(marketValue[-1] == 'k'):
-    return float(marketValue[1:-1]) * 1000
-  elif(marketValue[-1] == 'm'):
-    return float(marketValue[1:-1]) * 1000000
+  if not marketValue:
+    return None
+  try:
+    if marketValue[-1] == 'k':
+      return float(marketValue[1:-1]) * 1000
+    elif marketValue[-1] == 'm':
+        return float(marketValue[1:-1]) * 1000000
+    else:
+      return float(marketValue[1:])
+  except ValueError:
+    print(f"Erro ao converter o valor de mercado: {marketValue}")
+    return None
