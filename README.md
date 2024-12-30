@@ -1,7 +1,7 @@
 # Sobre o projeto
 
-Este projeto de Banco de Dados foi desenvolvido para atender às especificações da disciplina Banco de Dados do Departamento de Ciência da Computação da Universidade de Brasília. 
-O objetivo principal é criar um sistema funcional com um banco de dados relacional, utilizando boas práticas de modelagem e implementação.[Especificações](./pdf/especificacao_projeto.pdf)
+Este projeto de Banco de Dados foi desenvolvido para atender às [especificações](./pdf/especificacao_projeto.pdf) da disciplina Banco de Dados do Departamento de Ciência da Computação da Universidade de Brasília. 
+O objetivo principal é criar um sistema funcional com um banco de dados relacional, utilizando boas práticas de modelagem e implementação.
 
 # Participantes
 
