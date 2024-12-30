@@ -22,10 +22,10 @@ try:
     
     cursor = connection.cursor()
     
-    insert_query = "INSERT INTO Titulo (id, nome, ano) VALUES (%s, %s, %s)"
+    query = "INSERT INTO Titulo (id, nome, ano) VALUES (%s, %s, %s)"
     values = (1, 'Teste', 2022)
     
-    cursor.execute(insert_query, values)
+    cursor.execute(query, values)
     connection.commit()
     
     cursor.close()

@@ -1,7 +1,7 @@
 # Sobre o projeto
 
-Este projeto de Banco de Dados foi desenvolvido para atender às [especificações](./pdf/especificacao_projeto.pdf) da disciplina Banco de Dados do Departamento de Ciência da Computação da Universidade de Brasília. 
-O objetivo principal é criar um sistema funcional com um banco de dados relacional, utilizando boas práticas de modelagem e implementação.
+Este projeto de Banco de Dados foi desenvolvido para atender às [especificações](./pdf/especificacao_projeto.pdf) da disciplina Banco de Dados do Departamento de Ciência
+da Computação da Universidade de Brasília. O objetivo principal é criar um sistema funcional com um banco de dados relacional, utilizando boas práticas de modelagem e implementação.
 
 # Participantes
 
@@ -9,6 +9,36 @@ O objetivo principal é criar um sistema funcional com um banco de dados relacio
 - GUSTAVO VIEIRA DE ARAÚJO - 211068440
 - ADRIELLY VITORIA COSTA DE LIMA - 231018973
 - PEDRO RODRIGUES DIOGENES MACEDO - 211042739
+
+# Gerar SQL do schema do banco de dados
+
+```python
+# No Windows
+python ./concatenate_sql/concatenar_sql_schema_bd.py
+
+# No Linux ou Mac
+python3 ./concatenate_sql/concatenar_sql_schema_bd.py
+```
+
+# Modificar o banco de dados no Supabase
+
+1. Navegue ate o seguinte arquivo `supabase/executar_sql_supabase.py`
+2. No trecho de codigo abaixo, altere a variavel query conforme sua necessidade.
+
+```python
+query = "INSERT INTO Titulo (id, nome, ano) VALUES (%s, %s, %s)"
+values = (1, 'Teste', 2022)
+```
+
+3. Execute o comando abaixo para executar a query.
+
+```python
+# No Windows
+python ./supabase/executar_sql_supabase.py
+
+# No Linux ou Mac
+python3 ./supabase/executar_sql_supabase.py
+```
 
 # Cardinalidade e Participação das Entidades
 
