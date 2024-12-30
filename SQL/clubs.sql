@@ -10,10 +10,10 @@ CREATE TABLE clubs(
 	members NUMERIC,
 	marketValue MONEY,
 	squadSize INTEGER,
-    squadAvarageAge NUMERIC,
-    squadForeigners INTEGER,
-    squadNationalTeamPlayers INTEGER,
-    stadiumName VARCHAR(200),
-    stadiumSeats INTEGER,
-    competition VARCHAR(10)
+    	squadAvarageAge NUMERIC,
+    	squadForeigners INTEGER,
+    	squadNationalTeamPlayers INTEGER,
+    	stadiumName VARCHAR(200),
+    	stadiumSeats INTEGER,
+    	competition VARCHAR(10)
 );
