@@ -251,3 +251,9 @@ def translate_market_value(marketValue):
   except ValueError:
     print(f"Erro ao converter o valor de mercado: {marketValue}")
     return None
+  
+def translate_date(date):
+  return None if date == "-" else date
+
+def translate_city(city):
+  return city if city else None
