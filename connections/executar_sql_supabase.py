@@ -4,11 +4,11 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-USER = os.getenv("user")
-HOST = os.getenv("host")
-PORT = os.getenv("port")
-DBNAME = os.getenv("dbname")
-PASSWORD = os.getenv("password")
+USER = os.getenv("user_supabase")
+HOST = os.getenv("host_supabase")
+PORT = os.getenv("port_supabase")
+DBNAME = os.getenv("dbname_supabase")
+PASSWORD = os.getenv("password_supabase")
 
 try:
     connection = psycopg2.connect(
@@ -18,7 +18,6 @@ try:
         port=PORT,
         dbname=DBNAME
     )
-    print("Conectado com banco de dados com sucesso")
     
     cursor = connection.cursor()
     
@@ -30,7 +29,6 @@ try:
     
     cursor.close()
     connection.close()
-    print("Conexão fechada")
 
 except Exception as e:
     print(f"Falha na conexão ou execução do sql {e}")
