@@ -1,0 +1,120 @@
+group: futebol
+
+Estadio = {
+    id:number, nome:string, id_localizacao:number
+    1, EstadioTeste1, 1
+    2, EstadioTeste2, 2
+    3, EstadioTeste3, 3
+    4, EstadioTeste4, 4
+    5, EstadioTeste5, 5
+}
+
+Competicao = {
+    id:number, nome:string
+    1, CompeticaoTeste1
+    2, CompeticaoTeste2
+}
+
+Localizacao = {
+    id:number, continente:string
+    1, America
+    2, Europa
+    3, Asia
+    4, America
+    5, Africa
+}
+
+Estatistica = {
+    id:number, quantidade_jogos_jogados:number
+    1, 100
+    2, 200
+    3, 150
+    4, 180
+    5, 120
+}
+
+Titulo = {
+    id:number, nome:string
+    1, TituloTeste1
+    2, TituloTeste2
+    3, TituloTeste3
+    4, TituloTeste4
+    5, TituloTeste5
+}
+
+Pessoa = {
+    id:number, nome:string
+    1, PessoaTeste1
+    2, PessoaTeste2
+    3, PessoaTeste3
+    4, PessoaTeste4
+    5, PessoaTeste5
+}
+
+Arbitro = {
+    id:number, tempo_experiencia_meses:number, id_pessoa:number
+    1, 120, 1
+    2, 150, 2
+    3, 100, 3
+    4, 180, 4
+    5, 200, 5
+}
+
+Tecnico = {
+    id:number, data_entrou_time:date, id_time:number, id_pessoa:number
+    1, 2021-06-01, 1, 1
+    2, 2021-07-02, 2, 2
+    3, 2021-08-03, 3, 3
+    4, 2021-09-04, 4, 4
+    5, 2021-10-05, 5, 5
+}
+
+Jogo = {
+    id:number, data:date, id_estadio:number, id_arbitro:number, id_competicao:number
+    1, 2021-01-01, 1, 1, 1
+    2, 2021-02-02, 2, 2, 2
+    3, 2021-03-03, 3, 3, 3
+    4, 2021-04-04, 4, 4, 4
+    5, 2021-05-05, 5, 5, 5
+}
+
+Jogador = {
+    id:number, posicao:string, id_time:number, id_pessoa:number, id_estatistica:number
+    1, Atacante, 1, 1, 1
+    2, Meia, 2, 2, 2
+    3, Defensor, 3, 3, 3
+    4, Goleiro, 4, 4, 4
+    5, Atacante, 5, 5, 5
+}
+
+Jogo_Time = {
+    id:number, id_time:number, id_jogo:number
+    1, 1, 1
+    2, 2, 2
+    3, 3, 3
+    4, 4, 4
+    5, 5, 5
+    6, 1, 6
+    7, 2, 6
+    8, 3, 6
+    9, 4, 6
+    10, 5, 6
+}
+
+Jogador_Titulo = {
+    id:number, id_jogador:number, id_titulo:number
+    1, 1, 1
+    2, 2, 2
+    3, 3, 3
+    4, 4, 4
+    5, 5, 5
+}
+
+Time = {
+	id:number, nome:string, id_estadio:number
+	1, TimeTeste1, 1
+	2, TimeTeste2, 2
+	3, TimeTeste3, 3
+	4, TimeTeste4, 4
+	5, TimeTeste5, 5
+}

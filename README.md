@@ -140,3 +140,109 @@ python3 ./concatenate_sql/concatenar_sql_schema_bd.py
 # Modelo Relacional (MySQL Workbench)
 
 ![Imagem Modelo Relacional](./diagrams_images/modelo_relacional.png)
+
+# Consultas em SQL e Algebra Relacional
+
+## Primeira Consulta
+
+Essa consulta retorna uma lista de jogadores, suas posições, os nomes dos times aos quais pertencem, e as competições nas quais eles estão vinculados.
+
+### SQL
+
+```sql
+SELECT Jogador.id AS id_jogador, Jogador.posicao, Time.nome AS nome_time, Competicao.nome AS nome_competicao
+FROM Jogador
+JOIN Time ON Jogador.id_time = Time.id
+JOIN Jogo_Time ON Jogo_Time.id_time = Time.id
+JOIN Jogo ON Jogo_Time.id_jogo = Jogo.id
+JOIN Competicao ON Jogo.id_competicao = Competicao.id;
+```
+
+### Álgebra Relacional
+```txt
+ρ jogador_id←Jogador.id, time_nome←Time.nome, competicao_nome←Competicao.nome 
+π Jogador.id, Jogador.posicao, Time.nome, Competicao.nome ( 
+    ( 
+        ( 
+            ( Jogador ⨝ Jogador.id_time = Time.id Time ) 
+            ⨝ Jogo_Time.id_time = Time.id Jogo_Time ) 
+        ⨝ Jogo_Time.id_jogo = Jogo.id Jogo ) 
+    ⨝ Jogo.id_competicao = Competicao.id Competicao 
+)
+```
+
+### Construção da Consulta
+
+1. Parte 
+
+A consulta começa juntando as tabelas Jogador e Time. Usamos a junção para relacionar o id_time da tabela Jogador com o id da tabela Time. 
+Isso permite que possamos acessar as informações do jogador juntamente com o nome do time.
+
+```
+A = ( Jogador ⨝ Jogador.id_time = Time.id Time ) =
+SELECT Jogador.id, Jogador.posicao, Time.nome 
+FROM Jogador 
+JOIN Time ON Jogador.id_time = Time.id;
+```
+
+2. Parte
+
+A consulta é expandida para incluir a tabela Jogo_Time. A junção agora é feita entre Time e Jogo_Time com base no campo id_time. 
+Isso permite que, além das informações do jogador e do time, possamos acessar o id_jogo da tabela Jogo_Time, que indica o jogo em que o time participou.
+
+```
+B = A ⨝ Jogo_Time.id_time = Time.id Jogo_Time = 
+SELECT Jogador.id, Jogador.posicao, Time.nome, Jogo_Time.id_jogo 
+FROM Jogador 
+JOIN Time ON Jogador.id_time = Time.id 
+JOIN Jogo_Time ON Jogo_Time.id_time = Time.id;
+```
+
+3. Parte
+
+A consulta é expandida para incluir a tabela Jogo. Usamos uma junção com base no campo id_jogo de Jogo_Time e o id de Jogo. Isso nos dá acesso aos dados do jogo, como a competição na qual ele ocorreu. Agora temos as informações do jogador, do time e do jogo.
+
+```
+C = B ⨝ Jogo_Time.id_jogo = Jogo.id Jogo
+SELECT Jogador.id, Jogador.posicao, Time.nome, Competicao.nome
+FROM Jogador
+JOIN Time ON Jogador.id_time = Time.id
+JOIN Jogo_Time ON Jogo_Time.id_time = Time.id
+JOIN Jogo ON Jogo.id = Jogo_Time.id_jogo;
+```
+
+4. Parte
+
+Adicionamos a tabela Competicao à consulta. A junção é feita entre Jogo e Competicao com base no campo id_competicao. Agora, podemos acessar o nome da competição junto com as informações do jogador, time e jogo.
+
+```
+D = C ⨝ Jogo.id_competicao = Competicao.id Competicao
+SELECT Jogador.id, Jogador.posicao, Time.nome, Competicao.nome
+FROM Jogador
+JOIN Time ON Jogador.id_time = Time.id
+JOIN Jogo_Time ON Jogo_Time.id_time = Time.id
+JOIN Jogo ON Jogo.id = Jogo_Time.id_jogo
+JOIN Competicao ON Jogo.id_competicao = Competicao.id;
+```
+
+5. Parte
+
+Faz uma projeção que seleciona especificamente as colunas que queremos ver no resultado final: Jogador.id, Jogador.posicao, Time.nome e Competicao.nome. 
+Ou seja, estamos filtrando as colunas que serão exibidas no resultado da consulta.
+
+```
+E = π Jogador.id, Jogador.posicao, Time.nome, Competicao.nome = 
+SELECT Jogador.id, Jogador.posicao, Time.nome, Competicao.nome
+```
+
+6. Parte
+
+Aqui, a operação de renomeação é aplicada. Estamos renomeando as colunas.
+
+```
+F = ρ jogador_id←Jogador.id, time_nome←Time.nome, competicao_nome←Competicao.nome = 
+SELECT 
+Jogador.id AS jogador_id, 
+Time.nome AS time_nome, 
+Competicao.nome AS competicao_nome
+```
