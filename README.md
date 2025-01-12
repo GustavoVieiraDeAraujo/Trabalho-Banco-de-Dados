@@ -27,8 +27,8 @@ python3 ./concatenate_sql/concatenar_sql_schema_bd.py
     -   Uma competição → vários jogos (1:N).
     -   Um jogo → uma competição (N:1).
 -   **Participação:**
-    -   **Jogo:** Opcional (pode estar vinculado a uma competição, ou não).
-    -   **Competição:** Obrigatório (sempre tem um jogo).
+    -   **Jogo:** Obrigatório (sempre tem uma competição).
+    -   **Competição:** Opcional (pode estar vinculado a um jogo, ou não).
 
 ## 2. Relacionamento entre Jogo e Árbitro
 
@@ -64,7 +64,7 @@ python3 ./concatenate_sql/concatenar_sql_schema_bd.py
     -   Uma localização → vários estádios (N:1).
 -   **Participação:**
     -   **Estádio:** Obrigatória (sempre tem uma localização).
-    -   **Localização:** Opcional (pode estar vinculado a uma localização, ou não).
+    -   **Localização:** Opcional (pode estar vinculado a um estadio, ou não).
 
 ## 6. Relacionamento entre Estádio e Time
 
@@ -81,7 +81,7 @@ python3 ./concatenate_sql/concatenar_sql_schema_bd.py
     -   Um time → vários jogadores (1:N).
     -   Um jogador → um time (N:1).
 -   **Participação:**
-    -   **Time:** Obrigatória (sempre tem  jogadores).
+    -   **Time:** Opcional (pode estar vinculado a jogadores, ou não).
     -   **Jogador:** Opcional (pode estar vinculado a um time, ou não).
 
 ## 8. Relacionamento entre Time e Técnico
@@ -90,7 +90,7 @@ python3 ./concatenate_sql/concatenar_sql_schema_bd.py
     -   Um time → um técnico (1:1).
     -   Um técnico → um time (1:1).
 -   **Participação:**
-     -   **Time:** Obrigatória (sempre tem tecnico).
+     -   **Time:** Opcional (pode estar vinculado a um tecnico, ou não).
      -   **Tecnico:** Opcional (pode estar vinculado a um time, ou não).
 
 ## 9. Relacionamento entre Jogador e Título
@@ -115,7 +115,8 @@ python3 ./concatenate_sql/concatenar_sql_schema_bd.py
     -   Um jogador → uma pessoa (1:1).
     -   Uma pessoa → um jogador (1:1).
 -   **Participação:**
-    -   Ambos são obrigatórios.
+    -   **Pessoa:** Opcional (pode estar vinculado a um jogador, ou não).
+    -   **Jogador:** Obrigatória (sempre tem pessoa).
 
 ## 12. Relacionamento entre Pessoa e Técnico
 
@@ -123,7 +124,8 @@ python3 ./concatenate_sql/concatenar_sql_schema_bd.py
     -   Um técnico → uma pessoa (1:1).
     -   Uma pessoa → um técnico (1:1).
 -   **Participação:**
-    -   Ambos são obrigatórios.
+    -   **Pessoa:** Opcional (pode estar vinculado a um tecnico, ou não).
+    -   **Tecnico:** Obrigatória (sempre tem pessoa).
 
 ## 13. Relacionamento entre Pessoa e Árbitro
 
@@ -131,7 +133,17 @@ python3 ./concatenate_sql/concatenar_sql_schema_bd.py
     -   Um árbitro → uma pessoa (1:1).
     -   Uma pessoa → um árbitro (1:1).
 -   **Participação:**
-    -   Ambos são obrigatórios.
+    -   **Pessoa:** Opcional (pode estar vinculado a um arbitro, ou não).
+    -   **Arbitro:** Obrigatória (sempre tem pessoa).
+
+## 14. Relacionamento entre Localização e Time
+
+-   **Cardinalidade:**
+    -   Uma localização → varios times (1:N).
+    -   Um time → uma localização (1:1).
+-   **Participação:**
+    -   **Localização:** Opcional (pode estar vinculado a um time, ou não).
+    -   **Time:** Obrigatória (sempre tem localização).
 
 # Modelo de Entidade Relacionamento
 

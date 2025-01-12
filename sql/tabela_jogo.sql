@@ -1,6 +1,6 @@
 CREATE TABLE Jogo (
     id SERIAL PRIMARY KEY,
-    data DATE,
+    data_jogo DATE,
     gols_time_casa INT,
     gols_time_visitante INT,
     id_estadio INT,
