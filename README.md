@@ -443,7 +443,7 @@ Listagem de jogadores, suas estatísticas e o time ao qual pertencem.
 SELECT Jogador.id AS id_jogador, Pessoa.nome AS nome_jogador, Estatistica.quantidade_jogos_jogados, Time.nome AS nome_time
 FROM Jogador
 JOIN Pessoa ON Jogador.id_pessoa = Pessoa.id
-JOIN Estatistica ON Jogador.id_estatistica = Estatistica.id
+JOIN Estatistica ON Estatistica.id_jogador = Jogador.id
 JOIN Time ON Jogador.id_time = Time.id;
 ```
 
@@ -454,7 +454,7 @@ JOIN Time ON Jogador.id_time = Time.id;
 ( 
     ( 
         ( Jogador ⨝ Jogador.id_pessoa = Pessoa.id Pessoa ) 
-        ⨝ Jogador.id_estatistica = Estatistica.id Estatistica 
+        ⨝ Estatistica.id_jogador = Jogador.id Estatistica 
     ) 
     ⨝ Jogador.id_time = Time.id Time
 )
@@ -478,14 +478,14 @@ JOIN Pessoa ON Jogador.id_pessoa = Pessoa.id;
 2. Parte
 
 Expandimos a consulta para incluir as informações de estatísticas do jogador, como o número de jogos jogados. 
-A junção é feita utilizando o campo id_estatistica da tabela Jogador e o campo id da tabela Estatistica.
+A junção é feita utilizando o campo id da tabela Jogador e o campo id_jogador da tabela Estatistica.
 
 ```
-B = (A ⨝ Jogador.id_estatistica = Estatistica.id Estatistica) = 
+B = (A ⨝ Estatistica.id_jogador = Jogador.id Estatistica) = 
 SELECT Jogador.id AS id_jogador, Pessoa.nome AS nome_jogador, Estatistica.quantidade_jogos_jogados
 FROM Jogador
 JOIN Pessoa ON Jogador.id_pessoa = Pessoa.id
-JOIN Estatistica ON Jogador.id_estatistica = Estatistica.id;
+JOIN Estatistica ON Estatistica.id_jogador = Jogador.id;
 ```
 
 3. Parte
@@ -498,7 +498,7 @@ C = (B ⨝ Jogador.id_time = Time.id Time) =
 SELECT Jogador.id AS id_jogador, Pessoa.nome AS nome_jogador, Estatistica.quantidade_jogos_jogados, Time.nome AS nome_time
 FROM Jogador
 JOIN Pessoa ON Jogador.id_pessoa = Pessoa.id
-JOIN Estatistica ON Jogador.id_estatistica = Estatistica.id
+JOIN Estatistica ON Estatistica.id_jogador = Jogador.id
 JOIN Time ON Jogador.id_time = Time.id;
 ```
 
