@@ -42,31 +42,22 @@ Titulo = {
     5, TituloTeste5
 }
 
-Pessoa = {
-    id:number, nome:string
-    1, PessoaTeste1
-    2, PessoaTeste2
-    3, PessoaTeste3
-    4, PessoaTeste4
-    5, PessoaTeste5
-}
-
 Arbitro = {
-    id:number, tempo_experiencia_meses:number, id_pessoa:number
-    1, 120, 1
-    2, 150, 2
-    3, 100, 3
-    4, 180, 4
-    5, 200, 5
+    id:number, tempo_experiencia_meses:number
+    1, 120
+    2, 150
+    3, 100
+    4, 180
+    5, 200
 }
 
 Tecnico = {
-    id:number, data_entrou_time:date, id_time:number, id_pessoa:number
-    1, 2021-06-01, 1, 1
-    2, 2021-07-02, 2, 2
-    3, 2021-08-03, 3, 3
-    4, 2021-09-04, 4, 4
-    5, 2021-10-05, 5, 5
+    id:number, data_entrou_time:date, id_time:number
+    1, 2021-06-01, 1
+    2, 2021-07-02, 2
+    3, 2021-08-03, 3
+    4, 2021-09-04, 4
+    5, 2021-10-05, 5
 }
 
 Jogo = {
@@ -79,12 +70,12 @@ Jogo = {
 }
 
 Jogador = {
-    id:number, posicao:string, id_time:number, id_pessoa:number, id_estatistica:number
-    1, Atacante, 1, 1, 1
-    2, Meia, 1, 2, 2
-    3, Defensor, 1, 3, 3
-    4, Goleiro, 4, 4, 4
-    5, Atacante, 5, 5, 5
+    id:number, posicao:string, id_time:number, id_estatistica:number
+    1, Atacante, 1, 1
+    2, Meia, 1, 2
+    3, Defensor, 1, 3
+    4, Goleiro, 4, 4
+    5, Atacante, 5, 5
 }
 
 Jogo_Time = {

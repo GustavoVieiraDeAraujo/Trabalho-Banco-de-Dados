@@ -6,7 +6,6 @@ arquivos_sql = [
     './sql/tabela_localizacao.sql', 
     './sql/tabela_estatistica.sql', 
     './sql/tabela_titulo.sql', 
-    './sql/tabela_pessoa.sql', 
     './sql/tabela_estadio.sql', 
     './sql/tabela_time.sql', 
     './sql/tabela_arbitro.sql', 

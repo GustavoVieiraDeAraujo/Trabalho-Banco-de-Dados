@@ -1,0 +1,1 @@
+get_clubs_id(competition_id)

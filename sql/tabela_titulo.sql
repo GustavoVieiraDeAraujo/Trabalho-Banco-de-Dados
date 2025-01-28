@@ -1,4 +1,4 @@
 CREATE TABLE Titulo (
-    id SERIAL PRIMARY KEY,
-    nome VARCHAR(255),
+  id SERIAL PRIMARY KEY,
+  nome VARCHAR(255),
 );

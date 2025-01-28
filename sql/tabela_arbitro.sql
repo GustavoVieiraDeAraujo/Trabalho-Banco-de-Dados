@@ -1,6 +1,9 @@
 CREATE TABLE Arbitro (
-    id SERIAL PRIMARY KEY,
-    contrato_inicio INT,
-    id_pessoa INT,
-    CONSTRAINT fk_pessoa FOREIGN KEY (id_pessoa) REFERENCES Pessoa(id)
-);
+  id INTEGER PRIMARY KEY,
+  apelido VARCHAR(255),
+  nome VARCHAR(255),
+  data_nascimento DATE,
+  nacionalidade VARCHAR(255),
+  imagemURL VARCHAR(255),
+  contrato_inicio DATE
+)

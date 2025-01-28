@@ -2,9 +2,10 @@ import psycopg2
 
 def connect_postgresql_database():
   return psycopg2.connect(
-    dbname="soccer",
+    dbname="futebol",
     user="postgres",
-    password="17052003Lipe!",
+    password="1234",
     host="localhost",
-    port="5432"
+    port="5432",
+    options="-c client_encoding=UTF8"
   )

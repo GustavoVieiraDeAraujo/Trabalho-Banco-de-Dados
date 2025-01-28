@@ -257,3 +257,47 @@ def translate_date(date):
 
 def translate_city(city):
   return city if city else None
+
+def get_region_and_state(location):
+  city_data = {
+  'São Paulo': ('São Paulo', 'Sudeste'),
+  'Rio De Janeiro': ('Rio de Janeiro', 'Sudeste'),
+  'Porto Alegre': ('Rio Grande do Sul', 'Sul'),
+  'Salvador': ('Bahia', 'Nordeste'),
+  'Belo Horizonte': ('Minas Gerais', 'Sudeste'),
+  'Bragança Paulista': ('São Paulo', 'Sudeste'),
+  'Fortaleza': ('Ceará', 'Nordeste'),
+  'Santos': ('São Paulo', 'Sudeste'),
+  'Recife': ('Pernambuco', 'Nordeste'),
+  'Caxias Do Sul': ('Rio Grande do Sul', 'Sul'),
+  'Mirassol': ('São Paulo', 'Sudeste'),
+  }
+  result = city_data.get(location)
+  if result:
+    return result
+  else:
+    return f"Cidade '{location}' não encontrada no banco de dados."
+  
+def get_location_id(stadium):
+  data = [
+    (1, "São Paulo"),
+    (2, "Rio De Janeiro"),
+    (3, "Rio De Janeiro"),
+    (4, "Porto Alegre"),
+    (5, "Salvador"),
+    (6, "Belo Horizonte"),
+    (7, "Rio De Janeiro"),
+    (8, "Bragança Paulista"),
+    (9, "Rio de Janeiro"),
+    (10, "Fortaleza"),
+    (11, "Santos"),
+    (12, "Recife"),
+    (13, "Caxias do Sul"),
+    (14, "Mirassol"),
+  ]
+  city_to_id = {city: city_id for city_id, city in data}
+  city_id = city_to_id.get(stadium)
+  if city_id:
+    return city_id
+  else:
+    return f"Cidade '{stadium}' não encontrada."

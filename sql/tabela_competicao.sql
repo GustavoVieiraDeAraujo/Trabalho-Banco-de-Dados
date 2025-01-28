@@ -1,6 +1,8 @@
 CREATE TABLE Competicao (
-    id INTEGER PRIMARY KEY,
-    nome VARCHAR(255) NOT NULL,
-    ano INT,
-    confederacao VARCHAR(255),
+  id VARCHAR(10) PRIMARY KEY,
+  nome VARCHAR(255) NOT NULL,
+  ano INT,
+  confederacao VARCHAR(255),
+  imagemURL VARCHAR(255),
+  divisao VARCHAR(255)
 );

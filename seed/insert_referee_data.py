@@ -4,12 +4,12 @@ from translate import translate_country
 
 def insert_referee_data(referee_data):
   query = """
-    INSERT INTO referees
+    INSERT INTO Arbitro
     (
-      referee_id, shortName, fullName, dateOfBirth, 
-      age, countryOfBirth, joinedLeague, imageURL
+      id, apelido, nome, data_nascimento, 
+      nacionalidade, imagemURL, contrato_inicio
     ) 
-    VALUES %s ON CONFLICT (referee_id) DO NOTHING;
+    VALUES %s ON CONFLICT (id) DO NOTHING;
     """
   conn = connect_postgresql_database()
   cursor = conn.cursor()
@@ -26,21 +26,18 @@ def insert_referee_data(referee_data):
 
 def prepare_referee_data(referee_data):
   profile = referee_data.get("data", {}).get("profile", {})
-  date_of_birth = profile.get("dateOfBirth")
-  debut_date = profile.get("debut")
-  age = profile.get("age")
-  if date_of_birth == "0000-00-00" or not date_of_birth:
-    date_of_birth = None
-    age = None
-  if debut_date == "0000-00-00" or not debut_date:
-    debut_date = None
+  data_nascimento = profile.get("dateOfBirth")
+  contrato_incio = profile.get("debut")
+  if data_nascimento == "0000-00-00" or not data_nascimento:
+    data_nascimento = None
+  if contrato_incio == "0000-00-00" or not contrato_incio:
+    contrato_incio = None
   return (
     int(profile["id"]),
     profile.get("refereeName"),
     f"{profile.get('firstName', '')} {profile.get('lastName', '')}".strip(),
-    date_of_birth,
-    age,
-    translate_country(profile.get("countryName")) or None,
-    debut_date,
+    data_nascimento,
+    translate_country(profile.get("countryName", "").encode("latin1").decode("utf-8")) or None,
     profile.get("refereeImage") or None,
+    contrato_incio,
   )
