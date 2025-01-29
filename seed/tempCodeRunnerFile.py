@@ -1,1 +1,1 @@
-get_clubs_id(competition_id)
+    # insert_club_data(club_data)
