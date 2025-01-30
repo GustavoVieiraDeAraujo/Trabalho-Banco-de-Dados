@@ -6,5 +6,6 @@ CREATE TABLE Estatistica (
   vermelhos INT,
   amarelos INT,
   minutos INT,
-  id_jogador INT
+  id_jogador INT,
+  CONSTRAINT fk_jogador FOREIGN KEY (id_jogador) REFERENCES Jogador(id)
 )
