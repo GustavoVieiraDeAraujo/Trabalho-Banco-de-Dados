@@ -4,7 +4,6 @@ def get_players_achievements(clubs_id):
   achievements = set()
   for club_id in clubs_id:
     players_ids = get_players_by_club(club_id)
-    print(players_ids)
     for player_id in players_ids:
       player_achievements = get_achievements_by_player(player_id)
       achievements.update(player_achievements)
