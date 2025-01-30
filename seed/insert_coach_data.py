@@ -4,11 +4,11 @@ from translate import translate_date, translate_city
 
 def insert_coach_data(coach_data):
   query = """
-    INSERT INTO coaches 
+    INSERT INTO Tecnico 
     (
-      coach_id, shortName, fullName, imageURL, dateOfBirth, age,
-      cityOfBirth, countryOfBirth, club, joinedClub, contractExpires
-    ) VALUES %s ON CONFLICT (coach_id) DO NOTHING;
+      id, nome, apelido, data_nascimento, nacionalidade, imagemURL,
+      contrato_inicio, contrato_fim, cidade_nascimento, id_time
+    ) VALUES %s ON CONFLICT (id) DO NOTHING;
     """
   conn = connect_postgresql_database()
   cursor = conn.cursor()
@@ -28,14 +28,13 @@ def prepare_coach_data(coach_data):
   functions = profile.get("functions", [{}])[0]
   return (
     int(profile["id"]),
-    profile.get("personName"),
     f"{profile.get('firstName', '')} {profile.get('lastName', '')}".strip(),
-    profile.get("personImage"),
+    profile.get("personName"),
     profile.get("dateOfBirth"),
-    int(profile.get("age", 0)),
-    translate_city(profile.get("birthplace")),
     profile.get("countryName"),
-    int(functions.get("clubID", 0)),
+    profile.get("personImage"),
     translate_date(functions.get("appointed", None)),
     translate_date(functions.get("contractUntil", None)),
+    translate_city(profile.get("birthplace")),
+    int(functions.get("clubID", 0)),
   )
