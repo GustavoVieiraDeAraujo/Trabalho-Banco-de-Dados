@@ -280,20 +280,17 @@ def get_region_and_state(location):
   
 def get_location_id(stadium):
   data = [
-    (1, "São Paulo"),
-    (2, "Rio De Janeiro"),
-    (3, "Rio De Janeiro"),
-    (4, "Porto Alegre"),
-    (5, "Salvador"),
-    (6, "Belo Horizonte"),
-    (7, "Rio De Janeiro"),
-    (8, "Bragança Paulista"),
-    (9, "Rio de Janeiro"),
-    (10, "Fortaleza"),
-    (11, "Santos"),
-    (12, "Recife"),
-    (13, "Caxias do Sul"),
-    (14, "Mirassol"),
+    (12, "São Paulo"),
+    (13, "Rio De Janeiro"),
+    (14, "Porto Alegre"),
+    (15, "Belo Horizonte"),
+    (16, "Salvador"),
+    (17, "Bragança Paulista"),
+    (18, "Santos"),
+    (19, "Fortaleza"),
+    (20, "Recife"),
+    (21, "Caxias do Sul"),
+    (22, "Mirassol"),
   ]
   city_to_id = {city: city_id for city_id, city in data}
   city_id = city_to_id.get(stadium)

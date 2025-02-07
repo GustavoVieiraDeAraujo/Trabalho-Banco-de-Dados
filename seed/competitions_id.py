@@ -1,0 +1,1 @@
+competitions_id = ['BRA1']

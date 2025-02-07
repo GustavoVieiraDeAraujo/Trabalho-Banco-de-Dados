@@ -3,7 +3,7 @@ import requests
 def get_match_data(match_id):
   url = "https://transfermarkt6.p.rapidapi.com/fixtures/info"
   querystring = {"id":{match_id}}
-  headers = {"x-rapidapi-key": "1929b73a28msh626ba67ac998e8fp1b5a48jsndb38b4e856cb","x-rapidapi-host": "transfermarkt6.p.rapidapi.com"}
+  headers = {"x-rapidapi-key": "858da306e6mshdadcd289cbead99p135c26jsnc190725bbb08","x-rapidapi-host": "transfermarkt6.p.rapidapi.com"}
   response = requests.get(url, headers=headers, params=querystring)
   data = response.json()["data"]["gameInformation"]["dateSmall"]
   horario = response.json()["data"]["gameInformation"]["time"]

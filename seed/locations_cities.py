@@ -1,0 +1,1 @@
+locations_cities = ['São Paulo', 'Rio De Janeiro', 'Porto Alegre', 'Belo Horizonte', 'Salvador', 'Bragança Paulista', 'Santos', 'Fortaleza', 'Recife', 'Caxias Do Sul', 'Mirassol']

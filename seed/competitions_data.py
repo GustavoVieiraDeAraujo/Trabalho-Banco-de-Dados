@@ -1,0 +1,1 @@
+competitions_data = [('BRA1', 'Campeonato Brasileiro Série A', 2024, 'Brasil', 'https://tmssl.akamaized.net//images/logo/normal/bra1.png?lm=1713364599', 'Primeira Divisão')]
