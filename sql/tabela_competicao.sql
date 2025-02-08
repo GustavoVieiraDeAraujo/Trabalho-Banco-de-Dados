@@ -6,3 +6,7 @@ CREATE TABLE Competicao (
   imagemURL VARCHAR(255),
   divisao VARCHAR(255)
 );
+
+SELECT * FROM Competicao;
+TRUNCATE Competicao;
+DROP TABLE Competicao;

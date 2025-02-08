@@ -11,3 +11,7 @@ CREATE TABLE Tecnico (
   id_time INT,
   CONSTRAINT fk_time FOREIGN KEY (id_time) REFERENCES Time(id)
 )
+
+SELECT * FROM Tecnico;
+TRUNCATE Tecnico;
+DROP TABLE Tecnico;

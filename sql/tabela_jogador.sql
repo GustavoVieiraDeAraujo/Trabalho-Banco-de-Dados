@@ -19,3 +19,7 @@ CREATE TABLE Jogador (
   id_time INT,
   CONSTRAINT fk_time FOREIGN KEY (id_time) REFERENCES Time(id)
 );
+
+SELECT * FROM Jogador;
+TRUNCATE Jogador;
+DROP TABLE Jogador;
