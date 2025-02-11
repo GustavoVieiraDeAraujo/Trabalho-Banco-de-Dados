@@ -124,7 +124,7 @@ python3 ./concatenate_sql/concatenar_sql_schema_bd.py
 
 # Modelo Relacional (MySQL Workbench)
 
-![Imagem Modelo Relacional](./diagrams_images/modelo_relacional.png)
+![Imagem Modelo Relacional](./diagrams_images/modelo_relacional.PNG)
 
 # Consultas em SQL e Algebra Relacional
 
