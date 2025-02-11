@@ -109,34 +109,7 @@ python3 ./concatenate_sql/concatenar_sql_schema_bd.py
 -   **Participação:**
     -   Ambos são obrigatórios.
 
-## 11. Relacionamento entre Pessoa e Jogador
-
--   **Cardinalidade:**
-    -   Um jogador → uma pessoa (1:1).
-    -   Uma pessoa → um jogador (1:1).
--   **Participação:**
-    -   **Pessoa:** Opcional (pode estar vinculado a um jogador, ou não).
-    -   **Jogador:** Obrigatória (sempre tem pessoa).
-
-## 12. Relacionamento entre Pessoa e Técnico
-
--   **Cardinalidade:**
-    -   Um técnico → uma pessoa (1:1).
-    -   Uma pessoa → um técnico (1:1).
--   **Participação:**
-    -   **Pessoa:** Opcional (pode estar vinculado a um tecnico, ou não).
-    -   **Tecnico:** Obrigatória (sempre tem pessoa).
-
-## 13. Relacionamento entre Pessoa e Árbitro
-
--   **Cardinalidade:**
-    -   Um árbitro → uma pessoa (1:1).
-    -   Uma pessoa → um árbitro (1:1).
--   **Participação:**
-    -   **Pessoa:** Opcional (pode estar vinculado a um arbitro, ou não).
-    -   **Arbitro:** Obrigatória (sempre tem pessoa).
-
-## 14. Relacionamento entre Localização e Time
+## 11. Relacionamento entre Localização e Time
 
 -   **Cardinalidade:**
     -   Uma localização → varios times (1:N).
@@ -266,9 +239,8 @@ Seleção de títulos conquistados pelos jogadores em um time específico.
 ### SQL
 
 ```sql
-SELECT Jogador.id AS id_jogador, Pessoa.nome AS nome_jogador, Titulo.nome AS titulo_nome
+SELECT Jogador.id AS id_jogador, Titulo.nome AS titulo_nome
 FROM Jogador
-JOIN Pessoa ON Jogador.id_pessoa = Pessoa.id
 JOIN Jogador_Titulo ON Jogador.id = Jogador_Titulo.id_jogador
 JOIN Titulo ON Jogador_Titulo.id_titulo = Titulo.id
 JOIN Time ON Jogador.id_time = Time.id
@@ -277,13 +249,12 @@ WHERE Time.nome = 'TimeTeste1';
 
 ### Álgebra Relacional
 ```txt
-ρ id_jogador←Jogador.id, nome_jogador←Pessoa.nome, titulo_nome←Titulo.nome 
-π Jogador.id, Pessoa.nome, Titulo.nome 
+ρ id_jogador←Jogador.id, titulo_nome←Titulo.nome 
+π Jogador.id, Titulo.nome 
 σ Time.nome = 'TimeTeste1' ( 
     ( 
         ( 
-            (Jogador ⨝ Jogador.id_pessoa = Pessoa.id Pessoa) 
-            ⨝ Jogador.id = Jogador_Titulo.id_jogador Jogador_Titulo 
+            Jogador.id = Jogador_Titulo.id_jogador Jogador_Titulo 
         ) 
         ⨝ Jogador_Titulo.id_titulo = Titulo.id Titulo 
     ) 
@@ -293,61 +264,46 @@ WHERE Time.nome = 'TimeTeste1';
 
 ### Construção da Consulta
 
-1. Parte 
-
-Relacionamos a tabela Jogador com Pessoa utilizando o campo id_pessoa da tabela Jogador e o campo id da tabela Pessoa.
-Isso permite acessar o nome do jogador associado ao seu registro na tabela Pessoa.
-
-```
-A = (Jogador ⨝ Jogador.id_pessoa = Pessoa.id Pessoa) = 
-SELECT Jogador.id, Pessoa.nome
-FROM Jogador
-JOIN Pessoa ON Jogador.id_pessoa = Pessoa.id;
-```
-
-2. Parte
+1. Parte
 
 Expandimos a consulta para incluir informações sobre os títulos conquistados pelos jogadores. 
 A junção ocorre entre Jogador e Jogador_Titulo com base no campo id da tabela Jogador e id_jogador da tabela Jogador_Titulo.
 
 ```
 B = (A ⨝ Jogador.id = Jogador_Titulo.id_jogador Jogador_Titulo) = 
-SELECT Jogador.id, Pessoa.nome, Jogador_Titulo.id_titulo
+SELECT Jogador.id, Jogador_Titulo.id_titulo
 FROM Jogador
-JOIN Pessoa ON Jogador.id_pessoa = Pessoa.id
 JOIN Jogador_Titulo ON Jogador.id = Jogador_Titulo.id_jogador;
 ```
 
-3. Parte
+2. Parte
 
 A consulta é estendida para incluir informações sobre os títulos, como o nome dos títulos conquistados pelos jogadores. 
 A junção é feita entre Jogador_Titulo e Titulo com base nos campos id_titulo e id.
 
 ```
 C = (B ⨝ Jogador_Titulo.id_titulo = Titulo.id Titulo) = 
-SELECT Jogador.id, Pessoa.nome, Titulo.nome
+SELECT Jogador.id, Titulo.nome
 FROM Jogador
-JOIN Pessoa ON Jogador.id_pessoa = Pessoa.id
 JOIN Jogador_Titulo ON Jogador.id = Jogador_Titulo.id_jogador
 JOIN Titulo ON Jogador_Titulo.id_titulo = Titulo.id;
 ```
 
-4. Parte
+3. Parte
 
 Incluímos a tabela Time para relacionar os jogadores aos seus respectivos times. 
 A junção é feita com base no campo id_time da tabela Jogador e o campo id da tabela Time.
 
 ```
 D = (C ⨝ Jogador.id_time = Time.id Time) = 
-SELECT Jogador.id, Pessoa.nome, Titulo.nome, Time.nome
+SELECT Jogador.id, Titulo.nome, Time.nome
 FROM Jogador
-JOIN Pessoa ON Jogador.id_pessoa = Pessoa.id
 JOIN Jogador_Titulo ON Jogador.id = Jogador_Titulo.id_jogador
 JOIN Titulo ON Jogador_Titulo.id_titulo = Titulo.id
 JOIN Time ON Jogador.id_time = Time.id;
 ```
 
-5. Parte
+4. Parte
 
 Aplicamos a seleção para filtrar apenas os jogadores que pertencem ao time "TimeTeste1".
 
@@ -356,13 +312,13 @@ E = (σ Time.nome = 'TimeTeste1') =
 WHERE Time.nome = 'TimeTeste1';
 ```
 
-6. Parte
+5. Parte
 
 Selecionamos apenas as colunas para mostrar, sendo elas: o ID e nome do jogador, bem como seu respectivo titulo.
 
 ```
-F = (π Jogador.id, Pessoa.nome, Titulo.nome) = 
-SELECT Jogador.id AS id_jogador, Pessoa.nome AS nome_jogador, Titulo.nome AS nome_titulo
+F = (π Jogador.id, Titulo.nome) = 
+SELECT Jogador.id AS id_jogador, Titulo.nome AS nome_titulo
 ```
 
 ## Terceira Consulta
@@ -440,21 +396,19 @@ Listagem de jogadores, suas estatísticas e o time ao qual pertencem.
 ### SQL
 
 ```sql
-SELECT Jogador.id AS id_jogador, Pessoa.nome AS nome_jogador, Estatistica.quantidade_jogos_jogados, Time.nome AS nome_time
+SELECT Jogador.id AS id_jogador, Estatistica.quantidade_jogos_jogados, Time.nome AS nome_time
 FROM Jogador
-JOIN Pessoa ON Jogador.id_pessoa = Pessoa.id
 JOIN Estatistica ON Estatistica.id_jogador = Jogador.id
 JOIN Time ON Jogador.id_time = Time.id;
 ```
 
 ### Álgebra Relacional
 ```txt
-ρ id_jogador←Jogador.id, nome_jogador←Pessoa.nome, nome_time←Time.nome 
-π Jogador.id, Pessoa.nome, Estatistica.quantidade_jogos_jogados, Time.nome 
+ρ id_jogador←Jogador.id, nome_time←Time.nome 
+π Jogador.id, Estatistica.quantidade_jogos_jogados, Time.nome 
 ( 
     ( 
-        ( Jogador ⨝ Jogador.id_pessoa = Pessoa.id Pessoa ) 
-        ⨝ Estatistica.id_jogador = Jogador.id Estatistica 
+       Estatistica.id_jogador = Jogador.id Estatistica 
     ) 
     ⨝ Jogador.id_time = Time.id Time
 )
@@ -462,62 +416,47 @@ JOIN Time ON Jogador.id_time = Time.id;
 
 ### Construção da Consulta
 
-1. Parte 
-
-Relacionamos a tabela Jogador com a tabela Pessoa. 
-A junção ocorre utilizando o campo id_pessoa da tabela Jogador e o campo id da tabela Pessoa. 
-Isso permite que possamos associar as informações pessoais ao jogador.
-
-```
-A = (Jogador ⨝ Jogador.id_pessoa = Pessoa.id Pessoa) =
-SELECT Jogador.id AS id_jogador, Pessoa.nome AS nome_jogador
-FROM Jogador
-JOIN Pessoa ON Jogador.id_pessoa = Pessoa.id;
-```
-
-2. Parte
+1. Parte
 
 Expandimos a consulta para incluir as informações de estatísticas do jogador, como o número de jogos jogados. 
 A junção é feita utilizando o campo id da tabela Jogador e o campo id_jogador da tabela Estatistica.
 
 ```
 B = (A ⨝ Estatistica.id_jogador = Jogador.id Estatistica) = 
-SELECT Jogador.id AS id_jogador, Pessoa.nome AS nome_jogador, Estatistica.quantidade_jogos_jogados
+SELECT Jogador.id AS id_jogador, Estatistica.quantidade_jogos_jogados
 FROM Jogador
-JOIN Pessoa ON Jogador.id_pessoa = Pessoa.id
 JOIN Estatistica ON Estatistica.id_jogador = Jogador.id;
 ```
 
-3. Parte
+2. Parte
 
 Expandimos ainda mais a consulta para incluir informações sobre o time ao qual o jogador pertence.
 A junção é feita utilizando o campo id_time da tabela Jogador e o campo id da tabela Time.
 
 ```
 C = (B ⨝ Jogador.id_time = Time.id Time) = 
-SELECT Jogador.id AS id_jogador, Pessoa.nome AS nome_jogador, Estatistica.quantidade_jogos_jogados, Time.nome AS nome_time
+SELECT Jogador.id AS id_jogador, Estatistica.quantidade_jogos_jogados, Time.nome AS nome_time
 FROM Jogador
-JOIN Pessoa ON Jogador.id_pessoa = Pessoa.id
 JOIN Estatistica ON Estatistica.id_jogador = Jogador.id
 JOIN Time ON Jogador.id_time = Time.id;
 ```
 
-4. Parte
+3. Parte
 
 Selecionamos apenas as colunas relevantes para o resultado.
 
 ```
-D = (π Jogador.id, Pessoa.nome, Estatistica.quantidade_jogos_jogados, Time.nome) = 
-SELECT Jogador.id , Pessoa.nome, Estatistica.quantidade_jogos_jogados, Time.nome
+D = (π Jogador.id, Estatistica.quantidade_jogos_jogados, Time.nome) = 
+SELECT Jogador.id , Estatistica.quantidade_jogos_jogados, Time.nome
 ```
 
-5. Parte
+4. Parte
 
 Renomeamos as colunas para os aliás desejados. 
 
 ```
-E = (ρ id_jogador←Jogador.id, nome_jogador←Pessoa.nome, nome_time←Time.nome) =
-SELECT Jogador.id AS id_jogador, Pessoa.nome AS nome_jogador, Estatistica.quantidade_jogos_jogados, Time.nome AS nome_time
+E = (ρ id_jogador←Jogador.id, nome_time←Time.nome) =
+SELECT Jogador.id AS id_jogador, Estatistica.quantidade_jogos_jogados, Time.nome AS nome_time
 ```
 
 
