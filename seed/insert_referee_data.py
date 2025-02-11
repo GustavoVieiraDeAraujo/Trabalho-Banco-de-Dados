@@ -5,7 +5,7 @@ def insert_referee_data(referees_data):
   if not referees_data:
     print("Nenhum arbitro para inserir.")
     return
-  query = """INSERT INTO Arbitro (id, apelido, nome, data_nascimento, nacionalidade, imagemURL, contrato_inicio) VALUES %s ON CONFLICT (id) DO NOTHING;"""
+  query = """INSERT INTO Arbitro (id, apelido, nome, data_nascimento, nacionalidade, imagem, contrato_inicio) VALUES %s ON CONFLICT (id) DO NOTHING;"""
   conn = connect_postgresql_database()
   cursor = conn.cursor()
   try:

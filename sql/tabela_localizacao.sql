@@ -5,7 +5,3 @@ CREATE TABLE Localizacao (
   estado VARCHAR(255),
   cidade VARCHAR(255)
 );
-
-SELECT * FROM Localizacao;
-TRUNCATE Localizacao;
-DROP TABLE Localizacao;

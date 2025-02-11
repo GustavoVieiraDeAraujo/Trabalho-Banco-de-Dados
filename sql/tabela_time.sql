@@ -13,7 +13,3 @@ CREATE TABLE Time (
   CONSTRAINT fk_estadio FOREIGN KEY (id_estadio) REFERENCES Estadio(id),
   CONSTRAINT fk_localizacao FOREIGN KEY (id_localizacao) REFERENCES Localizacao(id)
 );
-
-SELECT * FROM Time;
-TRUNCATE Time;
-DROP TABLE Time;

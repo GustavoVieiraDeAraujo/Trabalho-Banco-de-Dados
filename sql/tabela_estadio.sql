@@ -6,7 +6,3 @@ CREATE TABLE Estadio (
   id_localizacao INT,
   CONSTRAINT fk_localizacao FOREIGN KEY (id_localizacao) REFERENCES Localizacao(id)
 );
-
-SELECT * FROM Estadio;
-TRUNCATE Estadio;
-DROP TABLE Estadio;

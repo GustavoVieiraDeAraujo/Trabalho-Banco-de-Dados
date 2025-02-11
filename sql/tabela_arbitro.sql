@@ -7,7 +7,3 @@ CREATE TABLE Arbitro (
   imagemURL VARCHAR(255),
   contrato_inicio DATE
 )
-
-SELECT * FROM Arbitro;
-TRUNCATE Arbitro;
-DROP TABTLE Arbitro;

@@ -9,7 +9,3 @@ CREATE TABLE Estatistica (
   id_jogador INT,
   CONSTRAINT fk_jogador FOREIGN KEY (id_jogador) REFERENCES Jogador(id)
 )
-
-SELECT * FROM Estatistica;
-TRUNCATE Estatistica;
-DROP TABLE Estatistica;

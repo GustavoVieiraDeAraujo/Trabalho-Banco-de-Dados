@@ -2,7 +2,3 @@ CREATE TABLE Titulo (
   id SERIAL PRIMARY KEY,
   nome VARCHAR(255)
 )
-
-SELECT * FROM Titulo;
-TRUNCATE Titulo;
-DROP TABLE Titulo;

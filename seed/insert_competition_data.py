@@ -5,7 +5,7 @@ def insert_competition_data(competitions_data):
   if not competitions_data:
     print("Nenhuma competicao para inserir")
     return
-  query = """INSERT INTO Competicao(id, nome, ano, confederacao, imagemURL, divisao) VALUES %s ON CONFLICT (id) DO NOTHING;"""
+  query = """INSERT INTO Competicao(id, nome, ano, confederacao, quantidade_times) VALUES %s ON CONFLICT (id) DO NOTHING;"""
   conn = connect_postgresql_database()
   cursor = conn.cursor()
   try:

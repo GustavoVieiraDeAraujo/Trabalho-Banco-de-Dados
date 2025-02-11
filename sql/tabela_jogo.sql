@@ -13,7 +13,3 @@ CREATE TABLE Jogo (
   CONSTRAINT fk_arbitro FOREIGN KEY (id_arbitro) REFERENCES Arbitro(id),
   CONSTRAINT fk_competicao FOREIGN KEY (id_competicao) REFERENCES Competicao(id)
 );
-
-SELECT * FROM Jogo;
-TRUNCATE Jogo;
-DROP TABLE Jogo;

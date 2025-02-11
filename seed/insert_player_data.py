@@ -5,7 +5,7 @@ def insert_player_data(players_data):
   if not players_data:
     print("Nenhum jogador para inserir.")
     return
-  query = """INSERT INTO Jogador (id, nome, apelido, data_nascimento, nacionalidade, imagemURL, posicao, altura, pe_dominante, valor_mercado, cidade_nascimento, numero_camisa, agente, patrocinador, redes_sociais, contrato_incio, contrato_fim, id_time) VALUES %s ON CONFLICT (id) DO NOTHING;"""
+  query = """INSERT INTO Jogador (id, nome, apelido, data_nascimento, nacionalidade, imagem, posicao, altura, pe_dominante, valor_mercado, cidade_nascimento, numero_camisa, agente, patrocinador, redes_sociais, data_inicio_contrato, data_fim_contrato, id_time) VALUES %s ON CONFLICT (id) DO NOTHING;"""
   conn = connect_postgresql_database()
   cursor = conn.cursor()
   try:

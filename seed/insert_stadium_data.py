@@ -6,7 +6,7 @@ def insert_stadium_data(estadios):
   if not estadios:
     print("Nenhum estadio para inserir.")
     return
-  query = """INSERT INTO Estadio(id, data_fundacao, nome, capacidade, id_localizacao) VALUES %s ON CONFLICT (id) DO NOTHING;"""
+  query = """INSERT INTO Estadio(id, data_fundacao, nome, capacidade_pessoas, id_localizacao) VALUES %s ON CONFLICT (id) DO NOTHING;"""
   conn = connect_postgresql_database()
   cursor = conn.cursor()
   try:

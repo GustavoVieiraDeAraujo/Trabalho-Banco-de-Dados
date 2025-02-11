@@ -5,7 +5,7 @@ def insert_players_stats(players_stats):
   if not players_stats:
     print("Nenhuma estatistica para inserir.")
     return
-  query = """INSERT INTO Estatistica (jogos, gols, assistencias, vermelhos, amarelos, minutos, id_jogador) VALUES %s ON CONFLICT DO NOTHING;"""
+  query = """INSERT INTO Estatistica (quantidade_jogos_jogados, quantidade_gols_marcados, quantidade_assistencias_gols, id_jogador) VALUES %s ON CONFLICT DO NOTHING;"""
   conn = connect_postgresql_database()
   cursor = conn.cursor()
   try:

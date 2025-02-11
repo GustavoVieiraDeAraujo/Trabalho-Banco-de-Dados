@@ -5,7 +5,7 @@ def insert_coach_data(coaches_data):
   if not coaches_data:
     print("Nenhum técnico para inserir.")
     return
-  query = """INSERT INTO Tecnico (id, nome, apelido, data_nascimento, nacionalidade, imagemURL,contrato_inicio, contrato_fim, cidade_nascimento, id_time) VALUES %s ON CONFLICT (id) DO NOTHING;"""
+  query = """INSERT INTO Tecnico (id, nome, apelido, data_nascimento, nacionalidade, imagem ,contrato_inicio, contrato_fim, cidade_nascimento, id_time) VALUES %s ON CONFLICT (id) DO NOTHING;"""
   conn = connect_postgresql_database()
   cursor = conn.cursor()
   try:
