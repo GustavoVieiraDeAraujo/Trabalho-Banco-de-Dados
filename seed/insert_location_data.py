@@ -5,7 +5,7 @@ def insert_location_data(location_data):
   if not location_data: 
     print("Nenhuma localizacao para inserir.")
     return
-  query = """INSERT INTO Localizacao(pais, regiao, estado, cidade) VALUES %s ON CONFLICT DO NOTHING;"""
+  query = """INSERT INTO Localizacao(id, pais, regiao, estado, cidade) VALUES %s ON CONFLICT DO NOTHING;"""
   conn = connect_postgresql_database()
   cursor = conn.cursor()
   try:
