@@ -467,7 +467,8 @@ Seleção de jogos, os times que participaram e o estádio onde o jogo ocorreu.
 ### SQL
 
 ```sql
-SELECT Jogo.id AS id_jogo, TimeCasa.nome AS nome_time_casa, TimeVisitante.nome AS nome_time_visitante, Jogo.data, Estadio.nome AS nome_estadio
+SELECT Jogo.id AS id_jogo, TimeCasa.nome AS nome_time_casa, TimeVisitante.nome AS
+nome_time_visitante, Jogo.data, Estadio.nome AS nome_estadio
 FROM Jogo
 JOIN Jogo_Time AS Jogo_Time_Casa ON Jogo.id = Jogo_Time_Casa.id_jogo
 JOIN Time AS TimeCasa ON Jogo_Time_Casa.id_time = TimeCasa.id
