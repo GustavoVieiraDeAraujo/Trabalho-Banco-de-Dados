@@ -529,7 +529,8 @@ Incluímos o time visitante ao jogo criando um aliás para as tabelas Jogo_Time_
 Assim, conseguimos associar um segundo time ao mesmo jogo.
 
 ```
-C = (B ⨝ Jogo.id = Jogo_Time_Visitante.id_jogo ρ Jogo_Time_Visitante Jogo_Time ⨝ Jogo_Time_Visitante.id_time = TimeVisitante.id ρ TimeVisitante Time) = 
+C = (B ⨝ Jogo.id = Jogo_Time_Visitante.id_jogo ρ Jogo_Time_Visitante Jogo_Time ⨝
+Jogo_Time_Visitante.id_time = TimeVisitante.id ρ TimeVisitante Time) = 
 SELECT Jogo.id AS id_jogo, Jogo.data, Time.nome AS nome_time_casa, TimeVisitante.nome AS nome_time_visitante
 FROM Jogo
 JOIN Jogo_Time AS Jogo_Time_Casa ON Jogo.id = Jogo_Time_Casa.id_jogo
@@ -544,7 +545,8 @@ Associamos os estádios onde os jogos ocorreram utilizando o campo id_estadio da
 
 ```
 D = (C ⨝ Jogo.id_estadio = Estadio.id Estadio) = 
-SELECT Jogo.id AS id_jogo, Time.nome AS nome_time_casa, TimeVisitante.nome AS nome_time_visitante, Jogo.data, Estadio.nome AS nome_estadio
+SELECT Jogo.id AS id_jogo, Time.nome AS nome_time_casa, TimeVisitante.nome AS nome_time_visitante,
+Jogo.data, Estadio.nome AS nome_estadio
 FROM Jogo
 JOIN Jogo_Time AS Jogo_Time_Casa ON Jogo.id = Jogo_Time_Casa.id_jogo
 JOIN Time AS TimeCasa ON Jogo_Time_Casa.id_time = TimeCasa.id
