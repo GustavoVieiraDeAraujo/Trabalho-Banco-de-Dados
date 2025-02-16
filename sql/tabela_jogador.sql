@@ -4,9 +4,9 @@ CREATE TABLE Jogador (
     altura DOUBLE PRECISION,
     pe_dominante VARCHAR(10) CHECK (pe_dominante IN ('Esquerda', 'Direita', 'Ambos')),
     valor_mercado MONEY,
-    cidade_nascimento VARCHAR(255)
+    cidade_nascimento VARCHAR(255),
     numero_camisa INTEGER,
-    agente VARCHAR(255)
+    agente VARCHAR(255),
     patrocinador VARCHAR(255),
     redes_sociais VARCHAR(255),
     contrato_incio DATE,
