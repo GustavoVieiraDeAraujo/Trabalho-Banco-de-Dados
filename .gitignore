@@ -1,3 +1,4 @@
-__pycache__
-
+__pycache__/
+*.pyc
 .env
+schema_banco_dados.sql
