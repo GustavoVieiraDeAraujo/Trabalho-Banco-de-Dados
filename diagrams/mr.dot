@@ -1,0 +1,175 @@
+digraph MR {
+    graph [fontname="Helvetica", bgcolor="white", pad="0.8", nodesep="0.5", ranksep="1.8", dpi=150];
+    node [fontname="Helvetica", fontsize=12, shape=plaintext];
+    edge [fontname="Helvetica", fontsize=10, color="#566573", arrowsize=0.9, penwidth=1.2];
+
+    Pessoa [label=<
+        <TABLE BORDER="2" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="white" COLOR="#2471A3">
+            <TR><TD COLSPAN="2" BGCOLOR="#2471A3"><FONT COLOR="white" POINT-SIZE="14"><B>Pessoa</B></FONT></TD></TR>
+            <TR><TD ALIGN="LEFT"><U><B>id</B></U></TD><TD ALIGN="LEFT">INTEGER PK</TD></TR>
+            <TR><TD ALIGN="LEFT">nome</TD><TD ALIGN="LEFT">VARCHAR(255)</TD></TR>
+            <TR><TD ALIGN="LEFT">apelido</TD><TD ALIGN="LEFT">VARCHAR(255)</TD></TR>
+            <TR><TD ALIGN="LEFT">data_nascimento</TD><TD ALIGN="LEFT">DATE</TD></TR>
+            <TR><TD ALIGN="LEFT">nacionalidade</TD><TD ALIGN="LEFT">VARCHAR(255)</TD></TR>
+            <TR><TD ALIGN="LEFT">imagemURL</TD><TD ALIGN="LEFT">VARCHAR(255)</TD></TR>
+        </TABLE>
+    >];
+
+    Localizacao [label=<
+        <TABLE BORDER="2" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="white" COLOR="#2471A3">
+            <TR><TD COLSPAN="2" BGCOLOR="#2471A3"><FONT COLOR="white" POINT-SIZE="14"><B>Localizacao</B></FONT></TD></TR>
+            <TR><TD ALIGN="LEFT"><U><B>id</B></U></TD><TD ALIGN="LEFT">SERIAL PK</TD></TR>
+            <TR><TD ALIGN="LEFT">pais</TD><TD ALIGN="LEFT">VARCHAR(255)</TD></TR>
+            <TR><TD ALIGN="LEFT">regiao</TD><TD ALIGN="LEFT">VARCHAR(255)</TD></TR>
+            <TR><TD ALIGN="LEFT">estado</TD><TD ALIGN="LEFT">VARCHAR(255)</TD></TR>
+            <TR><TD ALIGN="LEFT">cidade</TD><TD ALIGN="LEFT">VARCHAR(255)</TD></TR>
+        </TABLE>
+    >];
+
+    Competicao [label=<
+        <TABLE BORDER="2" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="white" COLOR="#2471A3">
+            <TR><TD COLSPAN="2" BGCOLOR="#2471A3"><FONT COLOR="white" POINT-SIZE="14"><B>Competicao</B></FONT></TD></TR>
+            <TR><TD ALIGN="LEFT"><U><B>id</B></U></TD><TD ALIGN="LEFT">INTEGER PK</TD></TR>
+            <TR><TD ALIGN="LEFT">nome</TD><TD ALIGN="LEFT">VARCHAR(255)</TD></TR>
+            <TR><TD ALIGN="LEFT">ano</TD><TD ALIGN="LEFT">INT</TD></TR>
+            <TR><TD ALIGN="LEFT">confederacao</TD><TD ALIGN="LEFT">VARCHAR(255)</TD></TR>
+        </TABLE>
+    >];
+
+    Titulo [label=<
+        <TABLE BORDER="2" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="white" COLOR="#2471A3">
+            <TR><TD COLSPAN="2" BGCOLOR="#2471A3"><FONT COLOR="white" POINT-SIZE="14"><B>Titulo</B></FONT></TD></TR>
+            <TR><TD ALIGN="LEFT"><U><B>id</B></U></TD><TD ALIGN="LEFT">SERIAL PK</TD></TR>
+            <TR><TD ALIGN="LEFT">nome</TD><TD ALIGN="LEFT">VARCHAR(255)</TD></TR>
+        </TABLE>
+    >];
+
+    Estadio [label=<
+        <TABLE BORDER="2" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="white" COLOR="#2471A3">
+            <TR><TD COLSPAN="2" BGCOLOR="#2471A3"><FONT COLOR="white" POINT-SIZE="14"><B>Estadio</B></FONT></TD></TR>
+            <TR><TD ALIGN="LEFT"><U><B>id</B></U></TD><TD ALIGN="LEFT">SERIAL PK</TD></TR>
+            <TR><TD ALIGN="LEFT">data_fundacao</TD><TD ALIGN="LEFT">DATE</TD></TR>
+            <TR><TD ALIGN="LEFT">nome</TD><TD ALIGN="LEFT">VARCHAR(255)</TD></TR>
+            <TR><TD ALIGN="LEFT">capacidade_pessoas</TD><TD ALIGN="LEFT">INT</TD></TR>
+            <TR><TD ALIGN="LEFT"><I>id_localizacao</I></TD><TD ALIGN="LEFT">INT FK</TD></TR>
+        </TABLE>
+    >];
+
+    Time [label=<
+        <TABLE BORDER="2" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="white" COLOR="#2471A3">
+            <TR><TD COLSPAN="2" BGCOLOR="#2471A3"><FONT COLOR="white" POINT-SIZE="14"><B>Time</B></FONT></TD></TR>
+            <TR><TD ALIGN="LEFT"><U><B>id</B></U></TD><TD ALIGN="LEFT">INTEGER PK</TD></TR>
+            <TR><TD ALIGN="LEFT">imagem_escudo</TD><TD ALIGN="LEFT">BYTEA</TD></TR>
+            <TR><TD ALIGN="LEFT">nome</TD><TD ALIGN="LEFT">VARCHAR(255)</TD></TR>
+            <TR><TD ALIGN="LEFT">apelido</TD><TD ALIGN="LEFT">VARCHAR(255)</TD></TR>
+            <TR><TD ALIGN="LEFT">data_fundacao</TD><TD ALIGN="LEFT">DATE</TD></TR>
+            <TR><TD ALIGN="LEFT">site_time_url</TD><TD ALIGN="LEFT">VARCHAR(255)</TD></TR>
+            <TR><TD ALIGN="LEFT">quantidade_socios</TD><TD ALIGN="LEFT">INT</TD></TR>
+            <TR><TD ALIGN="LEFT">qtd_jogadores_selecao</TD><TD ALIGN="LEFT">INT</TD></TR>
+            <TR><TD ALIGN="LEFT">valor_mercado</TD><TD ALIGN="LEFT">MONEY</TD></TR>
+            <TR><TD ALIGN="LEFT"><I>id_estadio</I></TD><TD ALIGN="LEFT">INT FK</TD></TR>
+            <TR><TD ALIGN="LEFT"><I>id_localizacao</I></TD><TD ALIGN="LEFT">INT FK</TD></TR>
+        </TABLE>
+    >];
+
+    Arbitro [label=<
+        <TABLE BORDER="2" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="white" COLOR="#2471A3">
+            <TR><TD COLSPAN="2" BGCOLOR="#2471A3"><FONT COLOR="white" POINT-SIZE="14"><B>Arbitro</B></FONT></TD></TR>
+            <TR><TD ALIGN="LEFT"><U><B>id</B></U></TD><TD ALIGN="LEFT">SERIAL PK</TD></TR>
+            <TR><TD ALIGN="LEFT">contrato_inicio</TD><TD ALIGN="LEFT">INT</TD></TR>
+            <TR><TD ALIGN="LEFT"><I>id_pessoa</I></TD><TD ALIGN="LEFT">INT FK</TD></TR>
+        </TABLE>
+    >];
+
+    Tecnico [label=<
+        <TABLE BORDER="2" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="white" COLOR="#2471A3">
+            <TR><TD COLSPAN="2" BGCOLOR="#2471A3"><FONT COLOR="white" POINT-SIZE="14"><B>Tecnico</B></FONT></TD></TR>
+            <TR><TD ALIGN="LEFT"><U><B>id</B></U></TD><TD ALIGN="LEFT">SERIAL PK</TD></TR>
+            <TR><TD ALIGN="LEFT">contrato_inicio</TD><TD ALIGN="LEFT">DATE</TD></TR>
+            <TR><TD ALIGN="LEFT">contrato_fim</TD><TD ALIGN="LEFT">DATE</TD></TR>
+            <TR><TD ALIGN="LEFT">cidade_nascimento</TD><TD ALIGN="LEFT">VARCHAR(255)</TD></TR>
+            <TR><TD ALIGN="LEFT"><I>id_time</I></TD><TD ALIGN="LEFT">INT FK</TD></TR>
+            <TR><TD ALIGN="LEFT"><I>id_pessoa</I></TD><TD ALIGN="LEFT">INT FK</TD></TR>
+        </TABLE>
+    >];
+
+    Jogo [label=<
+        <TABLE BORDER="2" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="white" COLOR="#2471A3">
+            <TR><TD COLSPAN="2" BGCOLOR="#2471A3"><FONT COLOR="white" POINT-SIZE="14"><B>Jogo</B></FONT></TD></TR>
+            <TR><TD ALIGN="LEFT"><U><B>id</B></U></TD><TD ALIGN="LEFT">SERIAL PK</TD></TR>
+            <TR><TD ALIGN="LEFT">data_jogo</TD><TD ALIGN="LEFT">DATE</TD></TR>
+            <TR><TD ALIGN="LEFT">gols_time_casa</TD><TD ALIGN="LEFT">INT</TD></TR>
+            <TR><TD ALIGN="LEFT">gols_time_visitante</TD><TD ALIGN="LEFT">INT</TD></TR>
+            <TR><TD ALIGN="LEFT"><I>id_estadio</I></TD><TD ALIGN="LEFT">INT FK</TD></TR>
+            <TR><TD ALIGN="LEFT"><I>id_arbitro</I></TD><TD ALIGN="LEFT">INT FK</TD></TR>
+            <TR><TD ALIGN="LEFT"><I>id_competicao</I></TD><TD ALIGN="LEFT">INT FK</TD></TR>
+        </TABLE>
+    >];
+
+    Jogador [label=<
+        <TABLE BORDER="2" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="white" COLOR="#2471A3">
+            <TR><TD COLSPAN="2" BGCOLOR="#2471A3"><FONT COLOR="white" POINT-SIZE="14"><B>Jogador</B></FONT></TD></TR>
+            <TR><TD ALIGN="LEFT"><U><B>id</B></U></TD><TD ALIGN="LEFT">INTEGER PK</TD></TR>
+            <TR><TD ALIGN="LEFT">posicao</TD><TD ALIGN="LEFT">VARCHAR(255)</TD></TR>
+            <TR><TD ALIGN="LEFT">altura</TD><TD ALIGN="LEFT">DOUBLE</TD></TR>
+            <TR><TD ALIGN="LEFT">pe_dominante</TD><TD ALIGN="LEFT">VARCHAR(10)</TD></TR>
+            <TR><TD ALIGN="LEFT">valor_mercado</TD><TD ALIGN="LEFT">MONEY</TD></TR>
+            <TR><TD ALIGN="LEFT">cidade_nascimento</TD><TD ALIGN="LEFT">VARCHAR(255)</TD></TR>
+            <TR><TD ALIGN="LEFT">numero_camisa</TD><TD ALIGN="LEFT">INTEGER</TD></TR>
+            <TR><TD ALIGN="LEFT">agente</TD><TD ALIGN="LEFT">VARCHAR(255)</TD></TR>
+            <TR><TD ALIGN="LEFT">patrocinador</TD><TD ALIGN="LEFT">VARCHAR(255)</TD></TR>
+            <TR><TD ALIGN="LEFT">redes_sociais</TD><TD ALIGN="LEFT">VARCHAR(255)</TD></TR>
+            <TR><TD ALIGN="LEFT">contrato_inicio</TD><TD ALIGN="LEFT">DATE</TD></TR>
+            <TR><TD ALIGN="LEFT">contrato_fim</TD><TD ALIGN="LEFT">DATE</TD></TR>
+            <TR><TD ALIGN="LEFT"><I>id_time</I></TD><TD ALIGN="LEFT">INT FK</TD></TR>
+            <TR><TD ALIGN="LEFT"><I>id_pessoa</I></TD><TD ALIGN="LEFT">INT FK</TD></TR>
+        </TABLE>
+    >];
+
+    Jogo_Time [label=<
+        <TABLE BORDER="2" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="white" COLOR="#1E8449">
+            <TR><TD COLSPAN="2" BGCOLOR="#1E8449"><FONT COLOR="white" POINT-SIZE="14"><B>Jogo_Time</B></FONT></TD></TR>
+            <TR><TD ALIGN="LEFT"><U><B>id</B></U></TD><TD ALIGN="LEFT">SERIAL PK</TD></TR>
+            <TR><TD ALIGN="LEFT"><I>id_time</I></TD><TD ALIGN="LEFT">INT FK</TD></TR>
+            <TR><TD ALIGN="LEFT"><I>id_jogo</I></TD><TD ALIGN="LEFT">INT FK</TD></TR>
+        </TABLE>
+    >];
+
+    Jogador_Titulo [label=<
+        <TABLE BORDER="2" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="white" COLOR="#1E8449">
+            <TR><TD COLSPAN="2" BGCOLOR="#1E8449"><FONT COLOR="white" POINT-SIZE="14"><B>Jogador_Titulo</B></FONT></TD></TR>
+            <TR><TD ALIGN="LEFT"><U><B>id</B></U></TD><TD ALIGN="LEFT">SERIAL PK</TD></TR>
+            <TR><TD ALIGN="LEFT"><I>id_jogador</I></TD><TD ALIGN="LEFT">INT FK</TD></TR>
+            <TR><TD ALIGN="LEFT"><I>id_titulo</I></TD><TD ALIGN="LEFT">INT FK</TD></TR>
+        </TABLE>
+    >];
+
+    Estatistica [label=<
+        <TABLE BORDER="2" CELLBORDER="0" CELLSPACING="0" CELLPADDING="6" BGCOLOR="white" COLOR="#2471A3">
+            <TR><TD COLSPAN="2" BGCOLOR="#2471A3"><FONT COLOR="white" POINT-SIZE="14"><B>Estatistica</B></FONT></TD></TR>
+            <TR><TD ALIGN="LEFT"><U><B>id</B></U></TD><TD ALIGN="LEFT">SERIAL PK</TD></TR>
+            <TR><TD ALIGN="LEFT">qtd_jogos_jogados</TD><TD ALIGN="LEFT">INT</TD></TR>
+            <TR><TD ALIGN="LEFT">qtd_gols_marcados</TD><TD ALIGN="LEFT">INT</TD></TR>
+            <TR><TD ALIGN="LEFT">qtd_assistencias</TD><TD ALIGN="LEFT">INT</TD></TR>
+            <TR><TD ALIGN="LEFT"><I>id_jogador</I></TD><TD ALIGN="LEFT">INT FK</TD></TR>
+        </TABLE>
+    >];
+
+    // === FOREIGN KEYS ===
+    Jogador -> Pessoa [label="  id_pessoa"];
+    Tecnico -> Pessoa [label="  id_pessoa"];
+    Arbitro -> Pessoa [label="  id_pessoa"];
+    Jogador -> Time [label="  id_time"];
+    Tecnico -> Time [label="  id_time"];
+    Time -> Estadio [label="  id_estadio"];
+    Time -> Localizacao [label="  id_localizacao"];
+    Estadio -> Localizacao [label="  id_localizacao"];
+    Jogo -> Estadio [label="  id_estadio"];
+    Jogo -> Arbitro [label="  id_arbitro"];
+    Jogo -> Competicao [label="  id_competicao"];
+    Jogo_Time -> Time [label="  id_time"];
+    Jogo_Time -> Jogo [label="  id_jogo"];
+    Jogador_Titulo -> Jogador [label="  id_jogador"];
+    Jogador_Titulo -> Titulo [label="  id_titulo"];
+    Estatistica -> Jogador [label="  id_jogador"];
+}

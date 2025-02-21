@@ -1,0 +1,128 @@
+graph MER {
+    graph [fontname="Helvetica", bgcolor="white", pad="0.5", nodesep="0.5", ranksep="0.9"];
+    node [fontname="Helvetica", fontsize=14];
+    edge [fontname="Helvetica", fontsize=12, penwidth=1.2];
+
+    // === ENTIDADES ===
+    node [shape=box, style="filled,bold", fillcolor="#D6EAF8", color="#2471A3", penwidth=2.5, fontsize=16];
+    PESSOA; JOGADOR; TIME; TECNICO; ARBITRO;
+    ESTADIO; LOCALIZACAO; COMPETICAO; JOGO;
+    TITULO; ESTATISTICA;
+
+    // === ENTIDADES ASSOCIATIVAS ===
+    node [shape=box, style="filled,bold", fillcolor="#D5F5E3", color="#1E8449", penwidth=3, fontsize=16];
+    JOGO_TIME [label="JOGO_TIME"];
+    JOGADOR_TITULO [label="JOGADOR_TITULO"];
+
+    // === RELACIONAMENTOS ===
+    node [shape=diamond, style=filled, fillcolor="#FADBD8", color="#CB4335", penwidth=2, width=1.5, height=1, fontsize=13];
+    r1 [label="especializa"];
+    r2 [label="especializa"];
+    r3 [label="especializa"];
+    r4 [label="escala"];
+    r5 [label="dirige"];
+    r6 [label="sede"];
+    r7 [label="localizado"];
+    r8 [label="localizado"];
+    r9 [label="ocorre"];
+    r10 [label="apita"];
+    r11 [label="pertence"];
+    r12 [label="possui"];
+    r13 [label="participa"];
+    r14 [label="conquista"];
+
+    // === ATRIBUTOS ===
+    node [shape=ellipse, style=filled, fillcolor="#FCF3CF", color="#D4AC0D", penwidth=1.5, fontsize=13, width=0, height=0];
+
+    // Pessoa
+    node [fontsize=15, style="filled,bold"]; pes_id [label="id"];
+    node [fontsize=13, style="filled"];
+    pes_nome [label="nome"]; pes_apelido [label="apelido"];
+    pes_nasc [label="dt_nascimento"]; pes_nac [label="nacionalidade"]; pes_img [label="imagemURL"];
+    PESSOA -- pes_id; PESSOA -- pes_nome; PESSOA -- pes_apelido;
+    PESSOA -- pes_nasc; PESSOA -- pes_nac; PESSOA -- pes_img;
+
+    // Jogador
+    node [fontsize=15, style="filled,bold"]; jog_id [label="id"];
+    node [fontsize=13, style="filled"];
+    jog_pos [label="posicao"]; jog_alt [label="altura"]; jog_pe [label="pe_dominante"];
+    jog_val [label="valor_mercado"]; jog_cam [label="numero_camisa"];
+    jog_cid [label="cidade_nasc"]; jog_cont [label="contrato"];
+    JOGADOR -- jog_id; JOGADOR -- jog_pos; JOGADOR -- jog_alt;
+    JOGADOR -- jog_pe; JOGADOR -- jog_val; JOGADOR -- jog_cam;
+    JOGADOR -- jog_cid; JOGADOR -- jog_cont;
+
+    // Time
+    node [fontsize=15, style="filled,bold"]; time_id [label="id"];
+    node [fontsize=13, style="filled"];
+    time_nome [label="nome"]; time_apelido [label="apelido"];
+    time_fund [label="dt_fundacao"]; time_escudo [label="escudo"];
+    time_valor [label="valor_mercado"]; time_socios [label="qtd_socios"];
+    TIME -- time_id; TIME -- time_nome; TIME -- time_apelido;
+    TIME -- time_fund; TIME -- time_escudo; TIME -- time_valor; TIME -- time_socios;
+
+    // Tecnico
+    node [fontsize=15, style="filled,bold"]; tec_id [label="id"];
+    node [fontsize=13, style="filled"];
+    tec_ini [label="contrato_inicio"]; tec_fim [label="contrato_fim"]; tec_cid [label="cidade_nasc"];
+    TECNICO -- tec_id; TECNICO -- tec_ini; TECNICO -- tec_fim; TECNICO -- tec_cid;
+
+    // Arbitro
+    node [fontsize=15, style="filled,bold"]; arb_id [label="id"];
+    node [fontsize=13, style="filled"];
+    arb_cont [label="contrato_inicio"];
+    ARBITRO -- arb_id; ARBITRO -- arb_cont;
+
+    // Estadio
+    node [fontsize=15, style="filled,bold"]; est_id [label="id"];
+    node [fontsize=13, style="filled"];
+    est_nome [label="nome"]; est_fund [label="dt_fundacao"]; est_cap [label="capacidade"];
+    ESTADIO -- est_id; ESTADIO -- est_nome; ESTADIO -- est_fund; ESTADIO -- est_cap;
+
+    // Localizacao
+    node [fontsize=15, style="filled,bold"]; loc_id [label="id"];
+    node [fontsize=13, style="filled"];
+    loc_pais [label="pais"]; loc_reg [label="regiao"]; loc_est [label="estado"]; loc_cid [label="cidade"];
+    LOCALIZACAO -- loc_id; LOCALIZACAO -- loc_pais; LOCALIZACAO -- loc_reg;
+    LOCALIZACAO -- loc_est; LOCALIZACAO -- loc_cid;
+
+    // Competicao
+    node [fontsize=15, style="filled,bold"]; comp_id [label="id"];
+    node [fontsize=13, style="filled"];
+    comp_nome [label="nome"]; comp_ano [label="ano"]; comp_conf [label="confederacao"];
+    COMPETICAO -- comp_id; COMPETICAO -- comp_nome; COMPETICAO -- comp_ano; COMPETICAO -- comp_conf;
+
+    // Jogo
+    node [fontsize=15, style="filled,bold"]; jogo_id [label="id"];
+    node [fontsize=13, style="filled"];
+    jogo_data [label="data_jogo"]; jogo_gc [label="gols_casa"]; jogo_gv [label="gols_visitante"];
+    JOGO -- jogo_id; JOGO -- jogo_data; JOGO -- jogo_gc; JOGO -- jogo_gv;
+
+    // Titulo
+    node [fontsize=15, style="filled,bold"]; tit_id [label="id"];
+    node [fontsize=13, style="filled"];
+    tit_nome [label="nome"];
+    TITULO -- tit_id; TITULO -- tit_nome;
+
+    // Estatistica
+    node [fontsize=15, style="filled,bold"]; estat_id [label="id"];
+    node [fontsize=13, style="filled"];
+    estat_jogos [label="jogos"]; estat_gols [label="gols"]; estat_assist [label="assistencias"];
+    ESTATISTICA -- estat_id; ESTATISTICA -- estat_jogos; ESTATISTICA -- estat_gols; ESTATISTICA -- estat_assist;
+
+    // === RELACIONAMENTOS ===
+    PESSOA -- r1 [label="1"]; r1 -- JOGADOR [label="N"];
+    PESSOA -- r2 [label="1"]; r2 -- TECNICO [label="N"];
+    PESSOA -- r3 [label="1"]; r3 -- ARBITRO [label="N"];
+    TIME -- r4 [label="1"]; r4 -- JOGADOR [label="N"];
+    TIME -- r5 [label="1"]; r5 -- TECNICO [label="1"];
+    TIME -- r6 [label="1"]; r6 -- ESTADIO [label="1"];
+    TIME -- r7 [label="N"]; r7 -- LOCALIZACAO [label="1"];
+    ESTADIO -- r8 [label="N"]; r8 -- LOCALIZACAO [label="1"];
+    JOGO -- r9 [label="N"]; r9 -- ESTADIO [label="1"];
+    JOGO -- r10 [label="N"]; r10 -- ARBITRO [label="1"];
+    JOGO -- r11 [label="N"]; r11 -- COMPETICAO [label="1"];
+    JOGADOR -- r12 [label="1"]; r12 -- ESTATISTICA [label="1"];
+    JOGO -- r13 [label="N"]; r13 -- TIME [label="M"];
+    JOGADOR -- r14 [label="N"]; r14 -- TITULO [label="M"];
+}
