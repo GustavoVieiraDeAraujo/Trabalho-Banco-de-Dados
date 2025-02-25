@@ -1,120 +1,123 @@
 group: futebol
 
-Estadio = {
-    id:number, nome:string, id_localizacao:number
-    1, EstadioTeste1, 1
-    2, EstadioTeste2, 2
-    3, EstadioTeste3, 3
-    4, EstadioTeste4, 4
-    5, EstadioTeste5, 5
-}
-
-Competicao = {
-    id:number, nome:string
-    1, CompeticaoTeste1
-    2, CompeticaoTeste2
+Pessoa = {
+    id:number, nome:string, apelido:string, data_nascimento:date, nacionalidade:string, imagemURL:string
+    1, Neymar Jr, Ney, 1992-02-05, Brasil, null
+    2, Vinicius Jr, Vini, 2000-07-12, Brasil, null
+    3, Endrick Felipe, Endrick, 2006-07-21, Brasil, null
+    4, Abel Ferreira, Abel, 1978-12-12, Portugal, null
+    5, Wilton Sampaio, Sampaio, 1982-05-30, Brasil, null
 }
 
 Localizacao = {
-    id:number, continente:string
-    1, America
-    2, Europa
-    3, Asia
-    4, America
-    5, Africa
+    id:number, pais:string, regiao:string, estado:string, cidade:string
+    1, Brasil, Sudeste, SP, Sao Paulo
+    2, Brasil, Sudeste, RJ, Rio de Janeiro
+    3, Brasil, Centro-Oeste, DF, Brasilia
+    4, Brasil, Sul, RS, Porto Alegre
+    5, Brasil, Nordeste, BA, Salvador
 }
 
-Estatistica = {
-    id:number, quantidade_jogos_jogados:number
-    1, 100
-    2, 200
-    3, 150
-    4, 180
-    5, 120
+Competicao = {
+    id:number, nome:string, ano:number, confederacao:string
+    1, Brasileirao Serie A, 2024, CBF
+    2, Copa do Brasil, 2024, CBF
+    3, Libertadores, 2024, CONMEBOL
+    4, Copa America, 2024, CONMEBOL
+    5, Supercopa, 2024, CBF
 }
 
 Titulo = {
     id:number, nome:string
-    1, TituloTeste1
-    2, TituloTeste2
-    3, TituloTeste3
-    4, TituloTeste4
-    5, TituloTeste5
+    1, Brasileirao 2023
+    2, Copa do Brasil 2023
+    3, Libertadores 2023
+    4, Supercopa 2024
+    5, Recopa 2023
 }
 
-Pessoa = {
-    id:number, nome:string
-    1, PessoaTeste1
-    2, PessoaTeste2
-    3, PessoaTeste3
-    4, PessoaTeste4
-    5, PessoaTeste5
+Estadio = {
+    id:number, data_fundacao:date, nome:string, capacidade_pessoas:number, id_localizacao:number
+    1, 1940-06-14, Morumbi, 66795, 1
+    2, 1950-06-16, Maracana, 78838, 2
+    3, 1974-03-21, Mane Garrincha, 72788, 3
+    4, 1969-04-06, Beira-Rio, 50128, 4
+    5, 1951-01-28, Fonte Nova, 47907, 5
+}
+
+Time = {
+    id:number, nome:string, apelido:string, data_fundacao:date, quantidade_socios:number, valor_mercado:number, id_estadio:number, id_localizacao:number
+    1, Palmeiras, Verdao, 1914-08-26, 150000, 500000000, 1, 1
+    2, Flamengo, Mengao, 1895-11-17, 400000, 600000000, 2, 2
+    3, Santos, Peixe, 1912-04-14, 80000, 200000000, 1, 1
+    4, Internacional, Colorado, 1909-04-04, 120000, 300000000, 4, 4
+    5, Bahia, Tricolor, 1931-01-01, 60000, 150000000, 5, 5
 }
 
 Arbitro = {
-    id:number, tempo_experiencia_meses:number, id_pessoa:number
-    1, 120, 1
-    2, 150, 2
-    3, 100, 3
-    4, 180, 4
-    5, 200, 5
+    id:number, contrato_inicio:number, id_pessoa:number
+    1, 2010, 5
+    2, 2012, 4
+    3, 2015, 3
+    4, 2008, 2
+    5, 2018, 1
 }
 
 Tecnico = {
-    id:number, data_entrou_time:date, id_time:number, id_pessoa:number
-    1, 2021-06-01, 1, 1
-    2, 2021-07-02, 2, 2
-    3, 2021-08-03, 3, 3
-    4, 2021-09-04, 4, 4
-    5, 2021-10-05, 5, 5
+    id:number, contrato_inicio:date, contrato_fim:date, cidade_nascimento:string, id_time:number, id_pessoa:number
+    1, 2020-01-01, 2025-12-31, Penafiel, 1, 4
+    2, 2021-03-15, 2024-12-31, Rio de Janeiro, 2, 3
+    3, 2022-06-01, 2025-06-01, Sao Paulo, 3, 2
+    4, 2019-08-10, 2024-08-10, Porto Alegre, 4, 1
+    5, 2023-01-01, 2026-01-01, Salvador, 5, 5
 }
 
 Jogo = {
-    id:number, data:date, id_estadio:number, id_arbitro:number, id_competicao:number
-    1, 2021-01-01, 1, 1, 1
-    2, 2021-02-02, 2, 2, 2
-    3, 2021-03-03, 3, 3, 3
-    4, 2021-04-04, 4, 4, 4
-    5, 2021-05-05, 5, 5, 5
+    id:number, data_jogo:date, gols_time_casa:number, gols_time_visitante:number, id_estadio:number, id_arbitro:number, id_competicao:number
+    1, 2024-05-10, 2, 1, 1, 1, 1
+    2, 2024-06-15, 0, 0, 2, 2, 1
+    3, 2024-08-20, 3, 2, 3, 1, 2
+    4, 2024-09-05, 1, 1, 4, 3, 1
+    5, 2024-10-12, 2, 3, 5, 4, 2
 }
 
 Jogador = {
-    id:number, posicao:string, id_time:number, id_pessoa:number, id_estatistica:number
-    1, Atacante, 1, 1, 1
-    2, Meia, 1, 2, 2
-    3, Defensor, 1, 3, 3
-    4, Goleiro, 4, 4, 4
-    5, Atacante, 5, 5, 5
+    id:number, posicao:string, altura:number, pe_dominante:string, valor_mercado:number, cidade_nascimento:string, numero_camisa:number, id_time:number, id_pessoa:number
+    1, Atacante, 1.75, Direita, 30000000, Mogi das Cruzes, 10, 3, 1
+    2, Atacante, 1.76, Direita, 150000000, Sao Goncalo, 7, 2, 2
+    3, Atacante, 1.73, Direita, 60000000, Brasilia, 9, 1, 3
+    4, Goleiro, 1.88, Direita, 5000000, Porto Alegre, 1, 4, 4
+    5, Meia, 1.80, Esquerda, 20000000, Salvador, 8, 5, 5
+}
+
+Estatistica = {
+    id:number, quantidade_jogos_jogados:number, quantidade_gols_marcados:number, quantidade_assistencias_gols:number, id_jogador:number
+    1, 120, 85, 45, 1
+    2, 95, 42, 30, 2
+    3, 30, 15, 8, 3
+    4, 200, 0, 0, 4
+    5, 80, 10, 25, 5
 }
 
 Jogo_Time = {
     id:number, id_time:number, id_jogo:number
     1, 1, 1
-    2, 2, 2
-    3, 3, 3
-    4, 4, 4
-    5, 5, 5
-    6, 1, 6
-    7, 2, 6
-    8, 3, 6
-    9, 4, 6
-    10, 5, 6
+    2, 2, 1
+    3, 2, 2
+    4, 3, 2
+    5, 1, 3
+    6, 3, 3
+    7, 4, 4
+    8, 5, 4
+    9, 1, 5
+    10, 5, 5
 }
 
 Jogador_Titulo = {
     id:number, id_jogador:number, id_titulo:number
     1, 1, 1
-    2, 1, 2
-    3, 2, 3
-    4, 2, 4
-    5, 5, 5
-}
-
-Time = {
-	id:number, nome:string, id_estadio:number
-	1, TimeTeste1, 1
-	2, TimeTeste2, 2
-	3, TimeTeste3, 3
-	4, TimeTeste4, 4
-	5, TimeTeste5, 5
+    2, 1, 3
+    3, 2, 2
+    4, 3, 1
+    5, 3, 3
 }
