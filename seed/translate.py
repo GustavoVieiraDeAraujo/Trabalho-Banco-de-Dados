@@ -231,9 +231,10 @@ def translate_country(country):
   return translations.get(country, country)
 
 def translate_foot(foot):
+  # Tem que bater com a CHECK constraint de Jogador.pe_dominante (Esquerda, Direita, Ambos).
   translation = {
-    "right": "Direito",
-    "left": "Esquerdo",
+    "right": "Direita",
+    "left": "Esquerda",
     "both": "Ambos",
   }
   return translation.get(foot, foot)
@@ -241,6 +242,8 @@ def translate_foot(foot):
 def translate_market_value(marketValue):
   if not marketValue:
     return None
+  if isinstance(marketValue, (int, float)):
+    return float(marketValue)
   try:
     if marketValue[-1] == 'k':
       return float(marketValue[1:-1]) * 1000
@@ -250,6 +253,18 @@ def translate_market_value(marketValue):
       return float(marketValue[1:])
   except ValueError:
     print(f"Erro ao converter o valor de mercado: {marketValue}")
+    return None
+
+def translate_height(height):
+  # A API mudou pra retornar altura em cm (inteiro); antes vinha como string "1,80 m".
+  if not height:
+    return None
+  if isinstance(height, (int, float)):
+    return round(height / 100, 2)
+  try:
+    return float(height.replace(',', '.').replace('m', '').strip())
+  except ValueError:
+    print(f"Erro ao converter a altura: {height}")
     return None
   
 def translate_date(date):
