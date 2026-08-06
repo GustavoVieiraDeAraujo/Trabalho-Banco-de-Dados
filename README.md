@@ -1,138 +1,384 @@
-# Sobre o projeto
+# Banco de Dados de Futebol
 
-Este projeto de Banco de Dados foi desenvolvido para atender às [especificações](./pdf/especificacao_projeto.pdf) da disciplina Banco de Dados do Departamento de Ciência da Computação da Universidade de Brasília. O objetivo principal é criar um sistema funcional com um banco de dados relacional, utilizando boas práticas de modelagem e implementação.
+Projeto da disciplina **Banco de Dados** do Departamento de Ciencia da Computacao da Universidade de Brasilia ([especificacao](./pdfs/especificacao_projeto.pdf)). Modela um sistema completo de futebol utilizando PostgreSQL, com dados reais populados automaticamente via API do [Transfermarkt](https://www.transfermarkt.com/).
 
-# Participantes
+---
 
-- FELIPE COSTA DE SOUSA - 211055236
-- GUSTAVO VIEIRA DE ARAÚJO - 211068440
-- ADRIELLY VITORIA COSTA DE LIMA - 231018973
-- PEDRO RODRIGUES DIOGENES MACEDO - 211042739
+## Sumario
 
-# Gerar SQL do schema do banco de dados
+- [Participantes](#participantes)
+- [Tecnologias](#tecnologias)
+- [Escopo do Projeto](#escopo-do-projeto)
+- [Estrutura do Projeto](#estrutura-do-projeto)
+- [Requisitos](#requisitos)
+- [Configuracao](#configuracao)
+- [Como Executar](#como-executar)
+- [Modelo de Entidade Relacionamento](#modelo-de-entidade-relacionamento)
+- [Modelo Relacional](#modelo-relacional)
+- [Cardinalidade e Participacao](#cardinalidade-e-participacao)
+- [View](#view)
+- [Procedure](#procedure)
+- [Avaliacao das Formas Normais](#avaliacao-das-formas-normais)
+- [Consultas SQL e Algebra Relacional](#consultas-sql-e-algebra-relacional)
 
-```python
-# No Windows
-python ./concatenate_sql/concatenar_sql_schema_bd.py
+---
 
-# No Linux ou Mac
-python3 ./concatenate_sql/concatenar_sql_schema_bd.py
+## Participantes
+
+| Nome                              | Matricula |
+|-----------------------------------|-----------|
+| Felipe Costa de Sousa             | 211055236 |
+| Gustavo Vieira de Araujo          | 211068440 |
+| Adrielly Vitoria Costa de Lima    | 231018973 |
+| Pedro Rodrigues Diogenes Macedo   | 211042739 |
+
+---
+
+## Tecnologias
+
+| Tecnologia   | Uso                                                        |
+|--------------|------------------------------------------------------------|
+| PostgreSQL   | SGBD relacional: armazenamento, views, procedures         |
+| Python 3     | Scripts de seed (populacao via API) e conexoes com o banco  |
+| psycopg2     | Driver PostgreSQL para Python                              |
+| Transfermarkt API | Fonte de dados reais (jogadores, clubes, tecnicos, arbitros) |
+| Graphviz     | Diagramas MER (Chen) e MR (tabelas) em SVG                 |
+| RelaX        | Validacao das consultas em Algebra Relacional               |
+
+---
+
+## Escopo do Projeto
+
+| Requisito da disciplina                              | Implementacao                                                       |
+|------------------------------------------------------|---------------------------------------------------------------------|
+| Minimo 10 entidades                                  | 14 tabelas (Pessoa, Jogador, Time, Tecnico, Arbitro, Estadio, etc.) |
+| Minimo 5 registros por tabela                        | Populado via API com dados reais de competicoes                     |
+| CRUD funcionando (min. 3 tabelas relacionadas)       | Create via scripts Python com `psycopg2` (seed/insert_*.py, sobre Pessoa, Jogador e Time); Read via `vw_jogadores_completo`; Update via procedure `transferir_jogador` |
+| Modelo de Entidade Relacionamento                    | Diagrama MER com notacao Chen (Graphviz SVG)                       |
+| Modelo Relacional                                    | Diagrama MR com tabelas, tipos SQL, PKs e FKs (Graphviz SVG)      |
+| 5 consultas em Algebra Relacional (3+ tabelas)       | 5 consultas com SQL e algebra relacional documentadas               |
+| Pelo menos 1 View                                    | `vw_jogadores_completo`: 5 tabelas (Jogador, Pessoa, Time, Localizacao, Estatistica) |
+| Pelo menos 1 Procedure (com condicionais)            | `transferir_jogador`: valida existencia, verifica duplicidade, atualiza contrato |
+| Avaliacao das formas normais em 5 tabelas            | Analise de 1FN, 2FN e 3FN documentada no README                    |
+| Insercao de dado binario                             | Imagem de escudo do time armazenada como `BYTEA`                    |
+| SGBD relacional                                      | PostgreSQL                                                          |
+
+---
+
+## Estrutura do Projeto
+
+| Diretorio / Arquivo                    | Descricao                                                             |
+|----------------------------------------|-----------------------------------------------------------------------|
+| `sql/`                                 | DDL (CREATE TABLE), View e Procedure                                  |
+| `sql/tabela_pessoa.sql`                | Entidade base (nome, apelido, nascimento, nacionalidade, foto)        |
+| `sql/tabela_jogador.sql`               | Jogador (posicao, altura, pe dominante, valor, camisa, agente)        |
+| `sql/tabela_time.sql`                  | Time (nome, escudo, fundacao, socios, valor de mercado)               |
+| `sql/tabela_tecnico.sql`               | Tecnico (contrato, cidade de nascimento)                              |
+| `sql/tabela_arbitro.sql`               | Arbitro (inicio de contrato)                                          |
+| `sql/tabela_estadio.sql`               | Estadio (nome, fundacao, capacidade)                                  |
+| `sql/tabela_localizacao.sql`           | Localizacao (pais, regiao, estado, cidade)                            |
+| `sql/tabela_competicao.sql`            | Competicao (nome, ano, confederacao)                                  |
+| `sql/tabela_jogo.sql`                  | Jogo (data, gols casa/visitante, estadio, arbitro, competicao)        |
+| `sql/tabela_jogo_time.sql`             | Relacao N:M entre Jogo e Time                                         |
+| `sql/tabela_titulo.sql`                | Titulo (nome)                                                         |
+| `sql/tabela_jogador_titulo.sql`        | Relacao N:M entre Jogador e Titulo                                    |
+| `sql/tabela_estatistica.sql`           | Estatistica (jogos, gols, assistencias)                               |
+| `sql/view_jogadores_completo.sql`      | View que consolida jogador, pessoa, time, localizacao e estatistica    |
+| `sql/procedure_transferir_jogador.sql` | Procedure para transferir jogador entre times com validacoes           |
+| `seed/`                                | Scripts Python para popular o banco via API Transfermarkt              |
+| `seed/players.py`                      | Seed de jogadores por competicao                                      |
+| `seed/clubs.py`                        | Seed de clubes/times por competicao                                   |
+| `seed/coaches.py`                      | Seed de tecnicos por competicao                                       |
+| `seed/referees.py`                     | Seed de arbitros (IDs fixos)                                          |
+| `seed/translate.py`                    | Traducao de campos (posicao, pais, pe dominante, valor de mercado)    |
+| `seed/connect_postgresql_database.py`  | Conexao com PostgreSQL via variaveis de ambiente                      |
+| `seed/get_*.py`                        | Funcoes de consulta a API (jogadores, clubes, tecnicos, arbitros)     |
+| `seed/insert_*.py`                     | Funcoes de insercao no banco                                          |
+| `concatenate_sql/`                     | Gera um unico arquivo SQL com todo o schema                          |
+| `relax/`                               | Schema para testar algebra relacional na ferramenta RelaX             |
+| `pdfs/`                                | Especificacao do projeto                                              |
+| `.env.example`                         | Modelo das variaveis de ambiente necessarias                          |
+
+---
+
+## Requisitos
+
+- PostgreSQL 12+
+- Python 3.8+
+- Bibliotecas Python: `psycopg2`, `requests`, `python-dotenv`
+
+```bash
+pip install psycopg2-binary requests python-dotenv
 ```
 
-# Cardinalidade e Participação das Entidades
+---
 
-## 1. Relacionamento entre Jogo e Competição
+## Configuracao
 
--   **Cardinalidade:**
-    -   Uma competição → vários jogos (1:N).
-    -   Um jogo → uma competição (N:1).
--   **Participação:**
-    -   **Jogo:** Obrigatório (sempre tem uma competição).
-    -   **Competição:** Opcional (pode estar vinculado a um jogo, ou não).
+Copie o arquivo de exemplo e preencha com suas credenciais:
 
-## 2. Relacionamento entre Jogo e Árbitro
+```bash
+cp .env.example .env
+```
 
--   **Cardinalidade:**
-    -   Um jogo → um árbitro (1:1).
-    -   Um árbitro → vários jogos (N:1).
--   **Participação:**
-    -   **Jogo:** Obrigatória (sempre tem um árbitro).
-    -   **Árbitro:** Opcional (pode estar vinculado a um jogo, ou não).
+Edite o `.env` com os dados do seu PostgreSQL e, se necessario, a API key do RapidAPI (usada pelos seeds de tecnicos e arbitros).
 
-## 3. Relacionamento entre Jogo e Estádio
+---
 
--   **Cardinalidade:**
-    -   Um jogo → um estádio (1:1).
-    -   Um estádio → vários jogos (N:1).
--   **Participação:**
-    -   **Jogo:** Obrigatória (sempre tem um estádio).
-    -   **Estádio:** Opcional (pode estar vinculado a um jogo, ou não).
+## Como Executar
 
-## 4. Relacionamento entre Jogo e Time
+### 1. Criar o banco e as tabelas
 
--   **Cardinalidade:**
-    -   Um jogo → vários times (N:M).
-    -   Um time → vários jogos (M:N).
--   **Participação:**
-    -   **Jogo:** Obrigatória (sempre tem time vinculados).
-    -   **Time:** Opcional (pode estar vinculado a um jogo, ou não).
+As tabelas devem ser criadas na ordem abaixo para respeitar as dependencias de chave estrangeira:
 
-## 5. Relacionamento entre Estádio e Localização
+```
+1.  tabela_pessoa.sql                    (sem dependencias)
+2.  tabela_localizacao.sql               (sem dependencias)
+3.  tabela_competicao.sql                (sem dependencias)
+4.  tabela_titulo.sql                    (sem dependencias)
+5.  tabela_estadio.sql                   (depende de Localizacao)
+6.  tabela_time.sql                      (depende de Estadio, Localizacao)
+7.  tabela_arbitro.sql                   (depende de Pessoa)
+8.  tabela_tecnico.sql                   (depende de Time, Pessoa)
+9.  tabela_jogo.sql                      (depende de Estadio, Arbitro, Competicao)
+10. tabela_jogador.sql                   (depende de Time, Pessoa)
+11. tabela_jogo_time.sql                 (depende de Time, Jogo)
+12. tabela_jogador_titulo.sql            (depende de Jogador, Titulo)
+13. tabela_estatistica.sql               (depende de Jogador)
+14. view_jogadores_completo.sql          (View, depende das tabelas acima)
+15. procedure_transferir_jogador.sql     (Procedure)
+```
 
--   **Cardinalidade:**
-    -   Um estádio → uma localização (1:1).
-    -   Uma localização → vários estádios (N:1).
--   **Participação:**
-    -   **Estádio:** Obrigatória (sempre tem uma localização).
-    -   **Localização:** Opcional (pode estar vinculado a um estadio, ou não).
+Ou gere um unico arquivo com todo o schema automaticamente:
 
-## 6. Relacionamento entre Estádio e Time
+```bash
+python3 concatenate_sql/concatenar_sql_schema_bd.py
+psql -U postgres -d soccer -f schema_banco_dados.sql
+```
 
--   **Cardinalidade:**
-    -   Um estádio → um time (1:1).
-    -   Um time → um estádio (1:1).
--   **Participação:**
-    -  **Estádio:** Opcional (pode estar vinculado a um time, ou não).
-    -  **Time:** Opcional (pode estar vinculado a um estadio, ou não).
+### 2. Popular o banco com dados da API
 
-## 7. Relacionamento entre Time e Jogador
+```bash
+cd seed
 
--   **Cardinalidade:**
-    -   Um time → vários jogadores (1:N).
-    -   Um jogador → um time (N:1).
--   **Participação:**
-    -   **Time:** Opcional (pode estar vinculado a jogadores, ou não).
-    -   **Jogador:** Opcional (pode estar vinculado a um time, ou não).
+# Popular jogadores (pede o nome da competicao, ex: "Brasileirao")
+python3 players.py
 
-## 8. Relacionamento entre Time e Técnico
+# Popular clubes
+python3 clubs.py
 
--   **Cardinalidade:**
-    -   Um time → um técnico (1:1).
-    -   Um técnico → um time (1:1).
--   **Participação:**
-     -   **Time:** Opcional (pode estar vinculado a um tecnico, ou não).
-     -   **Tecnico:** Opcional (pode estar vinculado a um time, ou não).
+# Popular tecnicos (pede o id da competicao)
+python3 coaches.py
 
-## 9. Relacionamento entre Jogador e Título
+# Popular arbitros
+python3 referees.py
+```
 
--   **Cardinalidade:**
-    -   Um jogador → vários títulos (1:N).
-    -   Um título → vários jogadores (N:M).
--   **Participação:**
-    -   Ambos são opcionais.
+### 3. Criar a View e a Procedure
 
-## 10. Relacionamento entre Jogador e Estatística
+```bash
+psql -U postgres -d soccer -f sql/view_jogadores_completo.sql
+psql -U postgres -d soccer -f sql/procedure_transferir_jogador.sql
+```
 
--   **Cardinalidade:**
-    -   Um jogador → uma estatística (1:1).
-    -   Uma estatística → um jogador (1:1).
--   **Participação:**
-    -   Ambos são obrigatórios.
+---
 
-## 11. Relacionamento entre Localização e Time
 
--   **Cardinalidade:**
-    -   Uma localização → varios times (1:N).
-    -   Um time → uma localização (1:1).
--   **Participação:**
-    -   **Localização:** Opcional (pode estar vinculado a um time, ou não).
-    -   **Time:** Obrigatória (sempre tem localização).
+## Modelo de Entidade Relacionamento
 
-# Modelo de Entidade Relacionamento
+Diagrama conceitual com notacao Chen: entidades (retangulos), atributos (elipses), relacionamentos (losangos) e cardinalidades (1, N, M).
 
-![Imagem Modelo de Entidade Relacionamento](./diagrams_images/modelo_entidade_relacionamento.jpeg)
+![Modelo de Entidade Relacionamento](./diagrams_images/modelo_entidade_relacionamento.png)
 
-# Modelo Relacional (MySQL Workbench)
+> [Abrir em tela cheia](./diagrams_images/modelo_entidade_relacionamento.png) | Fonte: [`diagrams/mer.dot`](./diagrams/mer.dot)
 
-![Imagem Modelo Relacional](./diagrams_images/modelo_relacional.PNG)
+---
 
-# Consultas em SQL e Algebra Relacional
+## Modelo Relacional
 
-## Primeira Consulta
+Diagrama logico com tabelas, tipos SQL do PostgreSQL, chaves primarias (sublinhadas) e chaves estrangeiras (italico). Tabelas associativas em verde.
 
-Seleção de jogadores, seus respectivos times e competições em que participaram
+![Modelo Relacional](./diagrams_images/modelo_relacional.png)
 
-### SQL
+> [Abrir em tela cheia](./diagrams_images/modelo_relacional.png) | Fonte: [`diagrams/mr.dot`](./diagrams/mr.dot)
+
+---
+
+## Cardinalidade e Participacao
+
+| Relacionamento           | Cardinalidade                                        | Participacao                              |
+|--------------------------|------------------------------------------------------|-------------------------------------------|
+| Jogo / Competicao        | 1:N (competicao tem varios jogos)                    | Jogo: obrigatoria / Competicao: opcional  |
+| Jogo / Arbitro           | N:1 (arbitro apita varios jogos)                     | Jogo: obrigatoria / Arbitro: opcional     |
+| Jogo / Estadio           | N:1 (estadio sedia varios jogos)                     | Jogo: obrigatoria / Estadio: opcional     |
+| Jogo / Time              | N:M (jogo tem varios times, time joga varios jogos)  | Jogo: obrigatoria / Time: opcional        |
+| Estadio / Localizacao    | N:1 (localizacao tem varios estadios)                | Estadio: obrigatoria / Localizacao: opcional |
+| Estadio / Time           | 1:1 (time tem um estadio sede)                       | Ambos opcionais                           |
+| Time / Jogador           | 1:N (time tem varios jogadores)                      | Ambos opcionais                           |
+| Time / Tecnico           | 1:1 (time tem um tecnico)                            | Ambos opcionais                           |
+| Time / Localizacao       | N:1 (localizacao tem varios times)                   | Time: obrigatoria / Localizacao: opcional |
+| Jogador / Titulo         | N:M (jogador tem varios titulos)                     | Ambos opcionais                           |
+| Jogador / Estatistica    | 1:1                                                  | Ambos obrigatorios                        |
+
+---
+
+## View
+
+**`vw_jogadores_completo`**: consolida dados de 5 tabelas (Jogador, Pessoa, Time, Localizacao, Estatistica) em uma unica visao, facilitando consultas sobre jogadores com informacoes do time e desempenho.
+
+```sql
+CREATE OR REPLACE VIEW vw_jogadores_completo AS
+SELECT
+    p.nome              AS nome_jogador,
+    p.apelido,
+    p.nacionalidade,
+    p.data_nascimento,
+    j.posicao,
+    j.altura,
+    j.pe_dominante,
+    j.valor_mercado,
+    j.numero_camisa,
+    t.nome              AS nome_time,
+    l.cidade            AS cidade_time,
+    l.pais              AS pais_time,
+    e.quantidade_jogos_jogados,
+    e.quantidade_gols_marcados,
+    e.quantidade_assistencias_gols
+FROM Jogador j
+JOIN Pessoa p       ON j.id_pessoa = p.id
+JOIN Time t         ON j.id_time = t.id
+JOIN Localizacao l  ON t.id_localizacao = l.id
+LEFT JOIN Estatistica e ON e.id_jogador = j.id;
+```
+
+Exemplo de uso:
+
+```sql
+SELECT nome_jogador, posicao, nome_time, quantidade_gols_marcados
+FROM vw_jogadores_completo
+WHERE pais_time = 'Brasil'
+ORDER BY quantidade_gols_marcados DESC;
+```
+
+---
+
+## Procedure
+
+**`transferir_jogador(p_jogador_id, p_novo_time_id)`**: realiza a transferencia de um jogador entre times com as seguintes validacoes condicionais:
+
+1. Verifica se o jogador existe
+2. Verifica se o time destino existe
+3. Verifica se o jogador ja pertence ao time (evita transferencia redundante)
+4. Trata o caso de jogador sem time atual
+5. Atualiza o time e a data de inicio de contrato
+
+```sql
+CREATE OR REPLACE PROCEDURE transferir_jogador(
+    p_jogador_id INT,
+    p_novo_time_id INT
+)
+LANGUAGE plpgsql AS $$
+DECLARE
+    v_time_atual INT;
+    v_nome_jogador VARCHAR;
+    v_nome_time_novo VARCHAR;
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM Jogador WHERE id = p_jogador_id) THEN
+        RAISE EXCEPTION 'Jogador com id % nao encontrado', p_jogador_id;
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM Time WHERE id = p_novo_time_id) THEN
+        RAISE EXCEPTION 'Time com id % nao encontrado', p_novo_time_id;
+    END IF;
+
+    SELECT id_time INTO v_time_atual FROM Jogador WHERE id = p_jogador_id;
+
+    IF v_time_atual = p_novo_time_id THEN
+        RAISE NOTICE 'Jogador ja pertence a este time. Nenhuma alteracao realizada.';
+        RETURN;
+    END IF;
+
+    IF v_time_atual IS NULL THEN
+        RAISE NOTICE 'Jogador sem time atual. Atribuindo diretamente.';
+    END IF;
+
+    UPDATE Jogador
+    SET id_time = p_novo_time_id,
+        contrato_incio = CURRENT_DATE
+    WHERE id = p_jogador_id;
+
+    SELECT p.nome INTO v_nome_jogador
+    FROM Jogador j JOIN Pessoa p ON j.id_pessoa = p.id
+    WHERE j.id = p_jogador_id;
+
+    SELECT nome INTO v_nome_time_novo FROM Time WHERE id = p_novo_time_id;
+
+    RAISE NOTICE 'Transferencia concluida: % -> %', v_nome_jogador, v_nome_time_novo;
+END;
+$$;
+```
+
+Exemplo de uso:
+
+```sql
+CALL transferir_jogador(1, 2);
+```
+
+---
+
+## Avaliacao das Formas Normais
+
+Analise de normalizacao de 5 tabelas do banco de dados.
+
+### Pessoa
+
+| Forma Normal | Atende? | Justificativa |
+|---|---|---|
+| 1FN | Sim | Todos os atributos sao atomicos (nome, apelido, data_nascimento, nacionalidade, imagemURL). Nao ha atributos multivalorados ou compostos. |
+| 2FN | Sim | A chave primaria e simples (`id`), portanto nao existe dependencia parcial: todos os atributos dependem integralmente da PK. |
+| 3FN | Sim | Nao ha dependencias transitivas. Todos os atributos (nome, apelido, nacionalidade, etc.) dependem diretamente de `id`. |
+
+### Jogador
+
+| Forma Normal | Atende? | Justificativa |
+|---|---|---|
+| 1FN | Sim | Todos os atributos sao atomicos. `pe_dominante` e restrito via CHECK a valores fixos ('Esquerda', 'Direita', 'Ambos'). |
+| 2FN | Sim | Chave primaria simples (`id`). Todos os atributos dependem integralmente da PK. |
+| 3FN | Sim | `id_time` e `id_pessoa` sao chaves estrangeiras, nao criam dependencia transitiva: referenciam entidades externas sem trazer seus atributos para dentro da tabela. |
+
+### Time
+
+| Forma Normal | Atende? | Justificativa |
+|---|---|---|
+| 1FN | Sim | Todos os atributos sao atomicos. `imagem_escudo` e armazenado como `BYTEA` (dado binario unico, nao multivalorado). |
+| 2FN | Sim | Chave primaria simples (`id`). Sem dependencia parcial. |
+| 3FN | Sim | `id_estadio` e `id_localizacao` sao FKs que referenciam entidades externas. Os demais atributos (nome, apelido, data_fundacao, valor_mercado, etc.) dependem diretamente de `id`. |
+
+### Jogo
+
+| Forma Normal | Atende? | Justificativa |
+|---|---|---|
+| 1FN | Sim | Todos os atributos sao atomicos. Gols de casa e visitante sao campos separados (`gols_time_casa`, `gols_time_visitante`). |
+| 2FN | Sim | Chave primaria simples (`id`). Todos os atributos dependem integralmente da PK. |
+| 3FN | Sim | `id_estadio`, `id_arbitro` e `id_competicao` sao FKs. Nao ha dependencia transitiva (por exemplo, o nome do estadio nao esta nesta tabela, apenas o `id_estadio`). |
+
+### Estatistica
+
+| Forma Normal | Atende? | Justificativa |
+|---|---|---|
+| 1FN | Sim | Todos os atributos sao atomicos (quantidades inteiras). |
+| 2FN | Sim | Chave primaria simples (`id`). Sem dependencia parcial. |
+| 3FN | Sim | `id_jogador` e FK. Os atributos de desempenho (jogos, gols, assistencias) dependem diretamente do registro de estatistica, sem transitividade. |
+
+---
+
+## Consultas SQL e Algebra Relacional
+
+### Consulta 1: Jogadores, times e competicoes
+
+Selecao de jogadores, seus respectivos times e competicoes em que participaram.
+
+**SQL:**
 
 ```sql
 SELECT Jogador.id AS id_jogador, Jogador.posicao, Time.nome AS nome_time, Competicao.nome AS nome_competicao
@@ -143,100 +389,52 @@ JOIN Jogo ON Jogo_Time.id_jogo = Jogo.id
 JOIN Competicao ON Jogo.id_competicao = Competicao.id;
 ```
 
-### Álgebra Relacional
-```txt
-ρ id_jogador←Jogador.id, nome_time←Time.nome, competicao_nome←Competicao.nome 
-π Jogador.id, Jogador.posicao, Time.nome, Competicao.nome ( 
-    ( 
-        ( 
-            ( Jogador ⨝ Jogador.id_time = Time.id Time ) 
-            ⨝ Jogo_Time.id_time = Time.id Jogo_Time ) 
-        ⨝ Jogo_Time.id_jogo = Jogo.id Jogo ) 
-    ⨝ Jogo.id_competicao = Competicao.id Competicao 
+**Algebra Relacional:**
+
+```
+ρ id_jogador←Jogador.id, nome_time←Time.nome, competicao_nome←Competicao.nome
+π Jogador.id, Jogador.posicao, Time.nome, Competicao.nome (
+    ((( Jogador ⨝ Jogador.id_time = Time.id Time )
+       ⨝ Jogo_Time.id_time = Time.id Jogo_Time )
+       ⨝ Jogo_Time.id_jogo = Jogo.id Jogo )
+       ⨝ Jogo.id_competicao = Competicao.id Competicao
 )
 ```
 
-### Construção da Consulta
+<details>
+<summary>Construcao passo a passo</summary>
 
-1. Parte 
-
-A consulta começa juntando as tabelas Jogador e Time. Usamos a junção para relacionar o id_time da tabela Jogador com o id da tabela Time. 
-Isso permite que possamos acessar as informações do jogador juntamente com o nome do time.
-
-```
-A = (Jogador ⨝ Jogador.id_time = Time.id Time) =
-SELECT Jogador.id, Jogador.posicao, Time.nome 
-FROM Jogador 
-JOIN Time ON Jogador.id_time = Time.id;
+1. Juntar Jogador com Time pelo `id_time`:
+```sql
+A = SELECT Jogador.id, Jogador.posicao, Time.nome FROM Jogador JOIN Time ON Jogador.id_time = Time.id;
 ```
 
-2. Parte
-
-A consulta é expandida para incluir a tabela Jogo_Time. A junção agora é feita entre Time e Jogo_Time com base no campo id_time. 
-Isso permite que, além das informações do jogador e do time, possamos acessar o id_jogo da tabela Jogo_Time, que indica o jogo em que o time participou.
-
-```
-B = (A ⨝ Jogo_Time.id_time = Time.id Jogo_Time) = 
-SELECT Jogador.id, Jogador.posicao, Time.nome, Jogo_Time.id_jogo 
-FROM Jogador 
-JOIN Time ON Jogador.id_time = Time.id 
-JOIN Jogo_Time ON Jogo_Time.id_time = Time.id;
+2. Incluir Jogo_Time para acessar os jogos do time:
+```sql
+B = A JOIN Jogo_Time ON Jogo_Time.id_time = Time.id;
 ```
 
-3. Parte
-
-A consulta é expandida para incluir a tabela Jogo. Usamos uma junção com base no campo id_jogo de Jogo_Time e o id de Jogo. Isso nos dá acesso aos dados do jogo, como a competição na qual ele ocorreu. Agora temos as informações do jogador, do time e do jogo.
-
-```
-C = (B ⨝ Jogo_Time.id_jogo = Jogo.id Jogo) =
-SELECT Jogador.id, Jogador.posicao, Time.nome, Competicao.nome
-FROM Jogador
-JOIN Time ON Jogador.id_time = Time.id
-JOIN Jogo_Time ON Jogo_Time.id_time = Time.id
-JOIN Jogo ON Jogo.id = Jogo_Time.id_jogo;
+3. Incluir Jogo para acessar a competicao:
+```sql
+C = B JOIN Jogo ON Jogo.id = Jogo_Time.id_jogo;
 ```
 
-4. Parte
-
-Adicionamos a tabela Competicao à consulta. A junção é feita entre Jogo e Competicao com base no campo id_competicao. Agora, podemos acessar o nome da competição junto com as informações do jogador, time e jogo.
-
-```
-D = (C ⨝ Jogo.id_competicao = Competicao.id Competicao) =
-SELECT Jogador.id, Jogador.posicao, Time.nome, Competicao.nome
-FROM Jogador
-JOIN Time ON Jogador.id_time = Time.id
-JOIN Jogo_Time ON Jogo_Time.id_time = Time.id
-JOIN Jogo ON Jogo.id = Jogo_Time.id_jogo
-JOIN Competicao ON Jogo.id_competicao = Competicao.id;
+4. Incluir Competicao pelo `id_competicao`:
+```sql
+D = C JOIN Competicao ON Jogo.id_competicao = Competicao.id;
 ```
 
-5. Parte
+5. Projecao das colunas desejadas e renomeacao.
 
-Faz uma projeção que seleciona especificamente as colunas que queremos ver no resultado final: Jogador.id, Jogador.posicao, Time.nome e Competicao.nome. 
-Ou seja, estamos filtrando as colunas que serão exibidas no resultado da consulta.
+</details>
 
-```
-E = (π Jogador.id, Jogador.posicao, Time.nome, Competicao.nome) = 
-SELECT Jogador.id, Jogador.posicao, Time.nome, Competicao.nome
-```
+---
 
-6. Parte
+### Consulta 2: Titulos por time
 
-Aqui, a operação de renomeação é aplicada. Estamos renomeando as colunas.
+Selecao de titulos conquistados pelos jogadores em um time especifico.
 
-```
-F = (ρ id_jogador←Jogador.id, nome_time←Time.nome, competicao_nome←Competicao.nome) = 
-SELECT 
-Jogador.id AS id_jogador, 
-Time.nome AS nome_time, 
-Competicao.nome AS competicao_nome
-```
-
-## Segunda Consulta
-
-Seleção de títulos conquistados pelos jogadores em um time específico.
-
-### SQL
+**SQL:**
 
 ```sql
 SELECT Jogador.id AS id_jogador, Titulo.nome AS titulo_nome
@@ -247,85 +445,36 @@ JOIN Time ON Jogador.id_time = Time.id
 WHERE Time.nome = 'TimeTeste1';
 ```
 
-### Álgebra Relacional
-```txt
-ρ id_jogador←Jogador.id, titulo_nome←Titulo.nome 
-π Jogador.id, Titulo.nome 
-σ Time.nome = 'TimeTeste1' ( 
-    ( 
-        ( 
-            Jogador.id = Jogador_Titulo.id_jogador Jogador_Titulo 
-        ) 
-        ⨝ Jogador_Titulo.id_titulo = Titulo.id Titulo 
-    ) 
-    ⨝ Jogador.id_time = Time.id Time 
+**Algebra Relacional:**
+
+```
+ρ id_jogador←Jogador.id, titulo_nome←Titulo.nome
+π Jogador.id, Titulo.nome
+σ Time.nome = 'TimeTeste1' (
+    (( Jogador ⨝ Jogador.id = Jogador_Titulo.id_jogador Jogador_Titulo )
+       ⨝ Jogador_Titulo.id_titulo = Titulo.id Titulo )
+       ⨝ Jogador.id_time = Time.id Time
 )
 ```
 
-### Construção da Consulta
+<details>
+<summary>Construcao passo a passo</summary>
 
-1. Parte
+1. Juntar Jogador com Jogador_Titulo para acessar os titulos.
+2. Incluir Titulo para obter o nome do titulo.
+3. Incluir Time para filtrar por time.
+4. Selecao (`σ`) onde `Time.nome = 'TimeTeste1'`.
+5. Projecao e renomeacao.
 
-Expandimos a consulta para incluir informações sobre os títulos conquistados pelos jogadores. 
-A junção ocorre entre Jogador e Jogador_Titulo com base no campo id da tabela Jogador e id_jogador da tabela Jogador_Titulo.
+</details>
 
-```
-B = (A ⨝ Jogador.id = Jogador_Titulo.id_jogador Jogador_Titulo) = 
-SELECT Jogador.id, Jogador_Titulo.id_titulo
-FROM Jogador
-JOIN Jogador_Titulo ON Jogador.id = Jogador_Titulo.id_jogador;
-```
+---
 
-2. Parte
+### Consulta 3: Arbitros, jogos e estadios
 
-A consulta é estendida para incluir informações sobre os títulos, como o nome dos títulos conquistados pelos jogadores. 
-A junção é feita entre Jogador_Titulo e Titulo com base nos campos id_titulo e id.
+Exibicao dos arbitros, os jogos que apitaram e os estadios onde ocorreram.
 
-```
-C = (B ⨝ Jogador_Titulo.id_titulo = Titulo.id Titulo) = 
-SELECT Jogador.id, Titulo.nome
-FROM Jogador
-JOIN Jogador_Titulo ON Jogador.id = Jogador_Titulo.id_jogador
-JOIN Titulo ON Jogador_Titulo.id_titulo = Titulo.id;
-```
-
-3. Parte
-
-Incluímos a tabela Time para relacionar os jogadores aos seus respectivos times. 
-A junção é feita com base no campo id_time da tabela Jogador e o campo id da tabela Time.
-
-```
-D = (C ⨝ Jogador.id_time = Time.id Time) = 
-SELECT Jogador.id, Titulo.nome, Time.nome
-FROM Jogador
-JOIN Jogador_Titulo ON Jogador.id = Jogador_Titulo.id_jogador
-JOIN Titulo ON Jogador_Titulo.id_titulo = Titulo.id
-JOIN Time ON Jogador.id_time = Time.id;
-```
-
-4. Parte
-
-Aplicamos a seleção para filtrar apenas os jogadores que pertencem ao time "TimeTeste1".
-
-```
-E = (σ Time.nome = 'TimeTeste1') =
-WHERE Time.nome = 'TimeTeste1';
-```
-
-5. Parte
-
-Selecionamos apenas as colunas para mostrar, sendo elas: o ID e nome do jogador, bem como seu respectivo titulo.
-
-```
-F = (π Jogador.id, Titulo.nome) = 
-SELECT Jogador.id AS id_jogador, Titulo.nome AS nome_titulo
-```
-
-## Terceira Consulta
-
-Exibição dos árbitros, os jogos que apitaram e os estádios onde os jogos ocorreram
-
-### SQL
+**SQL:**
 
 ```sql
 SELECT Arbitro.id AS id_arbitro, Jogo.id AS id_jogo, Jogo.data AS data_jogo, Estadio.nome AS nome_estadio
@@ -334,66 +483,32 @@ JOIN Jogo ON Arbitro.id = Jogo.id_arbitro
 JOIN Estadio ON Jogo.id_estadio = Estadio.id;
 ```
 
-### Álgebra Relacional
-```txt
-ρ id_arbitro←Arbitro.id, id_jogo←Jogo.id, data_jogo←Jogo.data, nome_estadio←Estadio.nome 
-π Arbitro.id, Jogo.id, Jogo.data, Estadio.nome ( 
-    ( Arbitro ⨝ Arbitro.id = Jogo.id_arbitro Jogo ) 
+**Algebra Relacional:**
+
+```
+ρ id_arbitro←Arbitro.id, id_jogo←Jogo.id, data_jogo←Jogo.data, nome_estadio←Estadio.nome
+π Arbitro.id, Jogo.id, Jogo.data, Estadio.nome (
+    ( Arbitro ⨝ Arbitro.id = Jogo.id_arbitro Jogo )
     ⨝ Jogo.id_estadio = Estadio.id Estadio
 )
 ```
 
-### Construção da Consulta
+<details>
+<summary>Construcao passo a passo</summary>
 
-1. Parte
+1. Juntar Arbitro com Jogo pelo `id_arbitro`.
+2. Incluir Estadio pelo `id_estadio`.
+3. Projecao e renomeacao.
 
-Começamos relacionando a tabela Arbitro com a tabela Jogo. 
-A junção ocorre utilizando o campo id da tabela Arbitro e o campo id_arbitro da tabela Jogo. 
-Isso nos permite identificar quais jogos foram apitados por quais árbitros.
+</details>
 
-```
-A = (Arbitro ⨝ Arbitro.id = Jogo.id_arbitro Jogo) = 
-SELECT Arbitro.id AS id_arbitro, Jogo.id AS id_jogo, Jogo.data
-FROM Arbitro
-JOIN Jogo ON Arbitro.id = Jogo.id_arbitro;
-```
+---
 
-2. Parte
+### Consulta 4: Jogadores, estatisticas e times
 
-Expandimos a consulta para incluir os dados sobre os estádios onde os jogos ocorreram. 
-A junção é feita utilizando o campo id_estadio da tabela Jogo e o campo id da tabela Estadio.
+Listagem de jogadores, suas estatisticas e o time ao qual pertencem.
 
-```
-B = A ⨝ Jogo.id_estadio = Estadio.id Estadio = 
-SELECT Arbitro.id AS id_arbitro, Jogo.id AS id_jogo, Jogo.data AS data_jogo, Estadio.nome AS nome_estadio
-FROM Arbitro
-JOIN Jogo ON Arbitro.id = Jogo.id_arbitro
-JOIN Estadio ON Jogo.id_estadio = Estadio.id;
-```
-
-3. Parte
-
-Selecionamos apenas as colunas para mostrar, sendo elas: o ID do árbitro, o ID do jogo, a data do jogo, e o nome do estádio.
-
-```
-C = π Arbitro.id, Jogo.id, Jogo.data, Estadio.nome B = 
-SELECT Arbitro.id ,Jogo.id ,Jogo.data ,Estadio.nome
-```
-
-4. Parte
-
-Finalmente, renomeamos as colunas para os nomes desejados no resultado :
-
-```
-D = ρ id_arbitro←Arbitro.id, id_jogo←Jogo.id, data_jogo←Jogo.data, nome_estadio←Estadio.nome C =
-SELECT Arbitro.id AS id_arbitro, Jogo.id AS id_jogo, Jogo.data AS data_jogo, Estadio.nome AS nome_estadio
-```
-
-## Quarta Consulta
-
-Listagem de jogadores, suas estatísticas e o time ao qual pertencem.
-
-### SQL
+**SQL:**
 
 ```sql
 SELECT Jogador.id AS id_jogador, Estatistica.quantidade_jogos_jogados, Time.nome AS nome_time
@@ -402,73 +517,36 @@ JOIN Estatistica ON Estatistica.id_jogador = Jogador.id
 JOIN Time ON Jogador.id_time = Time.id;
 ```
 
-### Álgebra Relacional
-```txt
-ρ id_jogador←Jogador.id, nome_time←Time.nome 
-π Jogador.id, Estatistica.quantidade_jogos_jogados, Time.nome 
-( 
-    ( 
-       Estatistica.id_jogador = Jogador.id Estatistica 
-    ) 
+**Algebra Relacional:**
+
+```
+ρ id_jogador←Jogador.id, nome_time←Time.nome
+π Jogador.id, Estatistica.quantidade_jogos_jogados, Time.nome (
+    ( Jogador ⨝ Estatistica.id_jogador = Jogador.id Estatistica )
     ⨝ Jogador.id_time = Time.id Time
 )
 ```
 
-### Construção da Consulta
+<details>
+<summary>Construcao passo a passo</summary>
 
-1. Parte
+1. Juntar Jogador com Estatistica pelo `id_jogador`.
+2. Incluir Time pelo `id_time`.
+3. Projecao e renomeacao.
 
-Expandimos a consulta para incluir as informações de estatísticas do jogador, como o número de jogos jogados. 
-A junção é feita utilizando o campo id da tabela Jogador e o campo id_jogador da tabela Estatistica.
+</details>
 
-```
-B = (A ⨝ Estatistica.id_jogador = Jogador.id Estatistica) = 
-SELECT Jogador.id AS id_jogador, Estatistica.quantidade_jogos_jogados
-FROM Jogador
-JOIN Estatistica ON Estatistica.id_jogador = Jogador.id;
-```
+---
 
-2. Parte
+### Consulta 5: Jogos, times e estadios
 
-Expandimos ainda mais a consulta para incluir informações sobre o time ao qual o jogador pertence.
-A junção é feita utilizando o campo id_time da tabela Jogador e o campo id da tabela Time.
+Selecao de jogos, os times que participaram (casa e visitante) e o estadio.
 
-```
-C = (B ⨝ Jogador.id_time = Time.id Time) = 
-SELECT Jogador.id AS id_jogador, Estatistica.quantidade_jogos_jogados, Time.nome AS nome_time
-FROM Jogador
-JOIN Estatistica ON Estatistica.id_jogador = Jogador.id
-JOIN Time ON Jogador.id_time = Time.id;
-```
-
-3. Parte
-
-Selecionamos apenas as colunas relevantes para o resultado.
-
-```
-D = (π Jogador.id, Estatistica.quantidade_jogos_jogados, Time.nome) = 
-SELECT Jogador.id , Estatistica.quantidade_jogos_jogados, Time.nome
-```
-
-4. Parte
-
-Renomeamos as colunas para os aliás desejados. 
-
-```
-E = (ρ id_jogador←Jogador.id, nome_time←Time.nome) =
-SELECT Jogador.id AS id_jogador, Estatistica.quantidade_jogos_jogados, Time.nome AS nome_time
-```
-
-
-## Quinta Consulta
-
-Seleção de jogos, os times que participaram e o estádio onde o jogo ocorreu.
-
-### SQL
+**SQL:**
 
 ```sql
-SELECT Jogo.id AS id_jogo, TimeCasa.nome AS nome_time_casa, TimeVisitante.nome AS
-nome_time_visitante, Jogo.data, Estadio.nome AS nome_estadio
+SELECT Jogo.id AS id_jogo, TimeCasa.nome AS nome_time_casa,
+       TimeVisitante.nome AS nome_time_visitante, Jogo.data, Estadio.nome AS nome_estadio
 FROM Jogo
 JOIN Jogo_Time AS Jogo_Time_Casa ON Jogo.id = Jogo_Time_Casa.id_jogo
 JOIN Time AS TimeCasa ON Jogo_Time_Casa.id_time = TimeCasa.id
@@ -477,89 +555,31 @@ JOIN Time AS TimeVisitante ON Jogo_Time_Visitante.id_time = TimeVisitante.id
 JOIN Estadio ON Jogo.id_estadio = Estadio.id;
 ```
 
-### Álgebra Relacional
-```txt
-ρ id_jogo←Jogo.id, nome_time_casa←TimeCasa.nome, nome_time_visitante←TimeVisitante.nome, nome_estadio←Estadio.nome 
-π Jogo.id, TimeCasa.nome, TimeVisitante.nome, Jogo.data, Estadio.nome 
-( 
-    ( 
-        ( 
-            ( 
-                (Jogo ⨝ Jogo.id = Jogo_Time_Casa.id_jogo ρ Jogo_Time_Casa Jogo_Time) 
-                ⨝ Jogo_Time_Casa.id_time = TimeCasa.id ρ TimeCasa Time 
-                )
-            ⨝ Jogo.id = Jogo_Time_Visitante.id_jogo ρ Jogo_Time_Visitante Jogo_Time 
-        )
-        ⨝ Jogo_Time_Visitante.id_time = TimeVisitante.id ρ TimeVisitante Time 
-    )
-    ⨝ Jogo.id_estadio = Estadio.id Estadio 
+**Algebra Relacional:**
+
+```
+ρ id_jogo←Jogo.id, nome_time_casa←TimeCasa.nome, nome_time_visitante←TimeVisitante.nome, nome_estadio←Estadio.nome
+π Jogo.id, TimeCasa.nome, TimeVisitante.nome, Jogo.data, Estadio.nome (
+    (((( Jogo ⨝ Jogo.id = Jogo_Time_Casa.id_jogo ρ Jogo_Time_Casa Jogo_Time )
+         ⨝ Jogo_Time_Casa.id_time = TimeCasa.id ρ TimeCasa Time )
+         ⨝ Jogo.id = Jogo_Time_Visitante.id_jogo ρ Jogo_Time_Visitante Jogo_Time )
+         ⨝ Jogo_Time_Visitante.id_time = TimeVisitante.id ρ TimeVisitante Time )
+         ⨝ Jogo.id_estadio = Estadio.id Estadio
 )
 ```
 
-### Construção da Consulta
+<details>
+<summary>Construcao passo a passo</summary>
 
-1. Parte 
+1. Juntar Jogo com Jogo_Time (alias Casa) para o time da casa.
+2. Incluir Time (alias TimeCasa) para o nome.
+3. Juntar novamente com Jogo_Time (alias Visitante) para o time visitante.
+4. Incluir Time (alias TimeVisitante) para o nome.
+5. Incluir Estadio pelo `id_estadio`.
+6. Projecao e renomeacao.
 
-Associamos os jogos à tabela de relação Jogo_Time, que mapeia quais times participaram de cada jogo.
-A junção é feita utilizando o campo id da tabela Jogo e o campo id_jogo da tabela Jogo_Time.
+</details>
 
-```
-A = (Jogo ⨝ Jogo.id = Jogo_Time_Casa.id_jogo ρ Jogo_Time_Casa Jogo_Time) = 
-SELECT Jogo.id AS id_jogo, Jogo.data
-FROM Jogo
-JOIN Jogo_Time AS Jogo_Time_Casa ON Jogo.id = Jogo_Time_Casa.id_jogo;
-```
+---
 
-2. Parte
-
-Expandimos a consulta para incluir as informações do time. 
-A junção é feita utilizando o campo id_time da tabela Jogo_Time e o campo id da tabela Time.
-
-```
-B = A ⨝ Jogo_Time_Casa.id_time = TimeCasa.id ρ TimeCasa Time = 
-SELECT Jogo.id AS id_jogo, Jogo.data, Time.nome AS nome_time_casa
-FROM Jogo
-JOIN Jogo_Time AS Jogo_Time_Casa ON Jogo.id = Jogo_Time_Casa.id_jogo
-JOIN Time AS TimeCasa ON Jogo_Time_Casa.id_time = TimeCasa.id;
-```
-
-3. Parte
-
-Incluímos o time visitante ao jogo criando um aliás para as tabelas Jogo_Time_Casa e TimeCasa, chamadas de Jogo_Time_Visitante e TimeVisitante.
-Assim, conseguimos associar um segundo time ao mesmo jogo.
-
-```
-C = (B ⨝ Jogo.id = Jogo_Time_Visitante.id_jogo ρ Jogo_Time_Visitante Jogo_Time ⨝
-Jogo_Time_Visitante.id_time = TimeVisitante.id ρ TimeVisitante Time) = 
-SELECT Jogo.id AS id_jogo, Jogo.data, Time.nome AS nome_time_casa, TimeVisitante.nome AS nome_time_visitante
-FROM Jogo
-JOIN Jogo_Time AS Jogo_Time_Casa ON Jogo.id = Jogo_Time_Casa.id_jogo
-JOIN Time AS TimeCasa ON Jogo_Time_Casa.id_time = TimeCasa.id
-JOIN Jogo_Time AS Jogo_Time_Visitante ON Jogo.id = Jogo_Time_Visitante.id_jogo
-JOIN Time AS TimeVisitante ON Jogo_Time_Visitante.id_time = TimeVisitante.id;
-```
-
-4. Parte
-
-Associamos os estádios onde os jogos ocorreram utilizando o campo id_estadio da tabela Jogo e o campo id da tabela Estadio.
-
-```
-D = (C ⨝ Jogo.id_estadio = Estadio.id Estadio) = 
-SELECT Jogo.id AS id_jogo, Time.nome AS nome_time_casa, TimeVisitante.nome AS nome_time_visitante,
-Jogo.data, Estadio.nome AS nome_estadio
-FROM Jogo
-JOIN Jogo_Time AS Jogo_Time_Casa ON Jogo.id = Jogo_Time_Casa.id_jogo
-JOIN Time AS TimeCasa ON Jogo_Time_Casa.id_time = TimeCasa.id
-JOIN Jogo_Time AS Jogo_Time_Visitante ON Jogo.id = Jogo_Time_Visitante.id_jogo
-JOIN Time AS TimeVisitante ON Jogo_Time_Visitante.id_time = TimeVisitante.id
-JOIN Estadio ON Jogo.id_estadio = Estadio.id;
-```
-
-5. Parte
-
-Selecionamos apenas as colunas relevantes para o resultado.
-
-```
-E = (π Jogo.id, TimeCasa.nome, TimeVisitante.nome, Jogo.data, Estadio.nome) = 
-SELECT Jogo.id, TimeCasa.nome, TimeVisitante.nome, Jogo.data, Estadio.nome
-```
+> Documentacao gerada com auxilio de IA.
